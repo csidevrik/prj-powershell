@@ -166,39 +166,39 @@ function Rename-FileswithAttributes {
 
     # Lista de archivos .xml en la carpeta
     # $archivosXml = Get-ChildItem $rutaCorregir -Filter "*.xml"
-    $archivosXML = $filesB | Sort -Descending -Property LastWriteTime | where {$_.extension -eq ".xml"}
+    $filesXML = $filesB | Sort -Descending -Property LastWriteTime | where {$_.extension -eq ".xml"}
 
 
-    foreach ($fileXml in $archivosXml) {
-        
-        Write-host $fileXml.Name
+    foreach ($filexml in $filesXML) {
+        Write-host $filexml.FullName
         # [Method 1]   not working
         # $xfile = New-Object System.Xml.XmlDocument
         # $file = Resolve-Path($fileXml)
         # $xfile.load($file)
 
         # Método 2
-        [xml] $xDoc = Get-Content $fileXml
-        # # Método 3
-        # $xDoc = [xml] (Get-Content ".\books.xml")
+        # [xml]$fxml01 = Get-Content $filexml.FullName
 
+        # Cargamos el contenido XML desde el archivo
+        $xml = [xml](Get-Content $filexml.FullName)
 
-        # Leer el contenido del archivo .xml
+        # Accedemos a la sección CDATA y obtenemos su contenido como una cadena XML
+        $comprobanteCDATA = $xml.autorizacion.comprobante
+        $comprobanteXmlString = $comprobanteCDATA.InnerText
 
-        # Obtener los atributos necesarios
-        $estab = $xDoc.SelectSingleNode("//estab")
-        # $ptoEmi = [xml]$contenidoXml | Select-Xml "//ptoEmi"
-        # $secuencial = [xml]$contenidoXml | Select-Xml "//secuencial"
-        # $campoAdicional = [xml]$contenidoXml | Select-Xml "//campoAdicional[@nombre='Instalacion']"
+        # Encapsulamos el contenido de la sección CDATA en un elemento raíz ficticio
+        $comprobanteXmlString = "<root>$comprobanteXmlString</root>"
 
-        # $estab = $contenidoXml.SelectSingleNode('//estab').InnerText
-        # $estab = $xml.ChildNodes.Where({$_.Name -eq "estab"}) |Select-Object -First 1
+        # Creamos un nuevo objeto XmlDocument y le asignamos el contenido como cadena XML
+        $comprobanteXml = [System.Xml.XmlDocument]::new()
+        $comprobanteXml.LoadXml($comprobanteXmlString)
 
-        # $ptoEmi = $contenidoXml.SelectSingleNode('//ptoEmi').InnerText
-        # $secuencial = $contenidoXml.SelectSingleNode('//secuencial').InnerText
-        # $campoAdicional = $contenidoXml.SelectSingleNode('//campoAdicional[@nombre="Instalacion"]').InnerText
+        # Ahora puedes trabajar con el objeto $comprobanteXml
+        $factura = $comprobanteXml.SelectSingleNode("//factura")
 
-        write-host $estab
+        # Mostrar el contenido de <factura>
+        Write-Host "Contenido de <factura>:"
+        Write-Host $factura.OuterXml
 
         # if ($estab -and $ptoEmi -and $secuencial -and $campoAdicional) {
         #     # Formar el nuevo nombre
