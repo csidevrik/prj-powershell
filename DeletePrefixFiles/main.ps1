@@ -6,6 +6,7 @@
 
 # VARIABLES
 # --------------------------------------
+$terminal = "terminal"
 
 $global:folderPath
 
