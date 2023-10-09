@@ -151,7 +151,7 @@ function Move-FailedFiles {
     }
 
     # Mostrar los archivos no válidos
-    $archivosNoValidos
+    # $archivosNoValidos
 }
 
 function Rename-FileswithAttributes {
