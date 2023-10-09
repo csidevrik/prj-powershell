@@ -171,47 +171,7 @@ function Rename-FileswithAttributes {
 
 
     foreach ($filexml in $filesXML) {
-        Write-host $filexml.FullName
-        # [Method 1]   not working
-        # $xfile = New-Object System.Xml.XmlDocument
-        # $file = Resolve-Path($fileXml)
-        # $xfile.load($file)
 
-        # Método 2
-        # [xml]$fxml01 = Get-Content $filexml.FullName
-
-        # Cargamos el contenido XML desde el archivo
-        $xml = [xml](Get-Content $filexml.FullName)
-
-        # Accedemos a la sección CDATA y obtenemos su contenido como una cadena XML
-        $comprobanteCDATA = $xml.autorizacion.comprobante
-        $comprobanteXmlString = $comprobanteCDATA.InnerText
-
-        # Encapsulamos el contenido de la sección CDATA en un elemento raíz ficticio
-        $comprobanteXmlString = "<root>$comprobanteXmlString</root>"
-
-        # Creamos un nuevo objeto XmlDocument y le asignamos el contenido como cadena XML
-        $comprobanteXml = [System.Xml.XmlDocument]::new()
-        $comprobanteXml.LoadXml($comprobanteXmlString)
-
-        # Ahora puedes trabajar con el objeto $comprobanteXml
-        $factura = $comprobanteXml.SelectSingleNode("//factura")
-
-        # Mostrar el contenido de <factura>
-        Write-Host "Contenido de <factura>:"
-        Write-Host $factura.OuterXml
-
-        # if ($estab -and $ptoEmi -and $secuencial -and $campoAdicional) {
-        #     # Formar el nuevo nombre
-        #     $nuevoNombre = "FAC-$$estab$ptoEmi$secuencial_$campoAdicional"
-        #     write-host $nuevoNombre
-        #     # Ruta del archivo .pdf con el mismo nombre
-        #     $rutaPdf = Join-Path -Path $rutaCorregir -ChildPath "$($fileXml.BaseName).pdf"
-
-        #     # Renombrar los archivos .pdf y .xml
-        #     Rename-Item -Path $fileXml.FullName -NewName "$nuevoNombre.xml"
-        #     Rename-Item -Path $rutaPdf -NewName "$nuevoNombre.pdf"
-        # }
     }
 }
 
