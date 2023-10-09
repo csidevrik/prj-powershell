@@ -1,7 +1,9 @@
 function Extract-XMLContent {
     param (
-        [Parameter][string] $FolderPath    
+        [Parameter (Mandatory=$false)][string] $FolderPath    
     )
+    # Specifies a path to one or more locations.
+   
 
     $xmlC = Get-Content -Path $FolderPath -Raw
 
@@ -28,12 +30,13 @@ function Extract-XMLContent {
     $newname = "FAC$estab$ptoEm$secue-$codig"
 
     # Rename-Item -Path $FolderPath -NewName "$newname.xml" -Force
+    write-host $newname
     return $newname
 }
 
 function Main {
-    $nuevoname = Extract-XMLContent -FolderPath "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD\test\FAC052884737_001.xml"
-    Write-Host $nuevoname
+    $abc = Extract-XMLContent -FolderPath "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD\test\FAC052884737_001.xml"
+    write-host $abc
 }
 
 Main
