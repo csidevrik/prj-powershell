@@ -23,7 +23,6 @@ function Extract-XMLContent {
     $estab = Select-Xml -Content $extractedXMLFac -XPath "//estab" 
     $ptoEm = Select-Xml -Content $extractedXMLFac -XPath "//ptoEmi"
     $secue =  Select-Xml -Content $extractedXMLFac -XPath "//secuencial"
-
     $codig = (Select-Xml -Content $extractedXMLFac -XPath '//campoAdicional[@nombre="Instalacion"]').Node.InnerText
 
     # Crear el nuevo nombre
