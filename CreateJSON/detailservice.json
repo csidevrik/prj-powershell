@@ -2,9 +2,39 @@
     {
         "cantidad":"30",
         "unidad":"MES",
-        "descripcion":"RDD 2 MBPS 1:1 EMOV A"
+        "descripcion":"INTERNET ",
+        "tipotech":"Fibra GPON",
+        "bandwidth":"10 MB",
+        "agencia":"AG-31-CAPULISPAMBA",
+        "estado":"activo",
+        "mount":"septiembre",
     },
     {
-
-    }
+        "cantidad":"30",
+        "unidad":"MES",
+        "descripcion":"INTERNET ",
+        "tipotech":"Fibra GPON",
+        "bandwidth":"10 MB",
+        "agencia":"AG-32-MAYANCELA",
+        "estado":"activo",
+        "mount":"septiembre",
+    },    {
+        "cantidad":"30",
+        "unidad":"MES",
+        "descripcion":"INTERNET ",
+        "tipotech":"Fibra GPON",
+        "bandwidth":"10 MB",
+        "agencia":"AG-33-TERMINAL TERRESTRE",
+        "estado":"activo",
+        "mount":"septiembre",
+    },    {
+        "cantidad":"30",
+        "unidad":"MES",
+        "descripcion":"INTERNET ",
+        "tipotech":"Fibra GPON",
+        "bandwidth":"10 MB",
+        "agencia":"AG-34-PARQUE MADRE",
+        "estado":"activo",
+        "mount":"septiembre",
+    },
 ]
