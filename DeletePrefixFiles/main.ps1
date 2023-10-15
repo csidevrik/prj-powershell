@@ -39,7 +39,8 @@ function Main {
     #     Write-Host "El usuario canceló la selección de carpeta."
     # }
 
-    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
+    # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
+    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP"
 
     # -------------------------------------------------------------------
 
@@ -89,7 +90,8 @@ function Remove-PrefixFilesPDF {
     # Iterar a través de los archivos PDF y renombrarlos
     foreach ($archivoPDF in $filesPDF) {
         # Obtener el nombre del archivo sin extensión
-        $nombreSinExtension = $archivoPDF.Name
+        $nombreSinExtension = [System.IO.Path]::GetFileNameWithoutExtension($archivoPDF.Name)
+
 
         # Verificar si el nombre del archivo PDF comienza con "RIDE_"
         if ($nombreSinExtension -match $Prefix) {
@@ -97,7 +99,7 @@ function Remove-PrefixFilesPDF {
             $nuevoNombre = $nombreSinExtension -replace $Prefix, ''
 
             # Construir el nuevo nombre del archivo PDF
-            $nuevoNombrePDF = $nuevoNombre + $archivoPDF.Extension
+            $nuevoNombrePDF = $nuevoNombre + ".pdf"
 
             # Ruta completa del archivo original y nuevo
             $rutaArchivoOriginal = $archivoPDF.FullName
@@ -197,7 +199,7 @@ function Rename-FileswithAttributes {
     # Ruta de la carpeta "corregir"
     $rutaCorregir = Join-Path -Path $FolderPath -ChildPath "corregir"
     Write-Host $rutaCorregir
-    $filesB =  Get-ChildItem -Path $rutaCorregir
+    $filesB =  Get-ChildItem -Path $FolderPath
 
     # Lista de archivos .xml en la carpeta
     # $archivosXml = Get-ChildItem $rutaCorregir -Filter "*.xml"
