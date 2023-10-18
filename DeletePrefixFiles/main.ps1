@@ -45,9 +45,9 @@ function Main {
     # -------------------------------------------------------------------
 
     # Remove duplicate files
-    # Remove-DuplicateFiles   -FolderPath $folderPath
-    # Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
-    # Move-FailedFiles        -FolderPath $folderPath
+    Remove-DuplicateFiles   -FolderPath $folderPath
+    Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
+    Move-FailedFiles        -FolderPath $folderPath
     # Ejemplo de uso:
     Rename-FileswithAttributes -FolderPath $folderPath
     
