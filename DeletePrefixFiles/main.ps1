@@ -40,16 +40,19 @@ function Main {
     # }
 
     # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
-    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP"
+    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEPTIEMBRE"
 
     # -------------------------------------------------------------------
 
-    # Remove duplicate files
-    Remove-DuplicateFiles   -FolderPath $folderPath
-    Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
-    Move-FailedFiles        -FolderPath $folderPath
+    # # Remove duplicate files
+    # Remove-DuplicateFiles   -FolderPath $folderPath
+    # Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
+    # Move-FailedFiles        -FolderPath $folderPath
     # Ejemplo de uso:
-    Rename-FileswithAttributes -FolderPath $folderPath
+    # Rename-FileswithAttributes -FolderPath $folderPath
+
+    Get-PDF-WithFirefox -FolderPath $folderPath
+    # Get-PDF-WithChrome -FolderPath $folderPath
     
  
 }
@@ -224,7 +227,54 @@ function Rename-FileswithAttributes {
     }
 }
 
+function Get-PDF-WithFirefox {
+    param(
+        [string] $FolderPath
+    )
+    # Obtener los nombres de todos los pdfs
+    $files = Get-ChildItem -Path $FolderPath
+    $listPdfNames = $files | Sort -Descending -Property LastWriteTime | where {$_.extension -eq ".pdf"}
+    $contador = 0
+      # Abre una nueva instancia de Firefox
+      Start-Process -FilePath "firefox.exe" -ArgumentList "--new-instance"
 
+    foreach ($archivo in $listPdfNames) {
+        $contador++
+        # Write-Host $contador
+        Write-Output $archivo.FullName
+        Start-Process -FilePath "firefox.exe" -ArgumentList "--new-tab", "file://$(Resolve-Path $archivo.FullName)"
+        Write-Output $contador
+        Start-Sleep -Seconds 1
+    }
+
+}
+
+function Get-PDF-WithChrome {
+    param(
+        [string] $FolderPath
+    )
+    # Obtener los nombres de todos los pdfs
+    $files = Get-ChildItem -Path $FolderPath
+    $listPdfNames = $files | Sort -Descending -Property LastWriteTime | where {$_.extension -eq ".pdf"}
+    $contador = 0
+
+    foreach ($archivo in $listPdfNames) {
+        $contador++
+        # Write-Host $contador
+        Write-Output $archivo.FullName
+        Start-Process -FilePath "chrome.exe" -ArgumentList "--new-tab", "file://$(Resolve-Path $archivo.FullName)"
+        Write-Output $contador
+        Start-Sleep -Seconds 1
+    }
+
+}
+
+function Get-NamesFacs {
+    param (
+        [string] $FolderPath
+    )
+
+}
 
 
 Main
