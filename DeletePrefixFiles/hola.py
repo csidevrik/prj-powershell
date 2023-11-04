@@ -1,3 +1,4 @@
+import json
 import os
 import fnmatch
 
@@ -13,8 +14,16 @@ def get_files_pdf(path):
     return files_pdf
 
 def main():
-    directorio = '/home/adminos/OneDriveP/2A-JOB02-EMOVEP/2023/CONTRATOS/RE-EP-EMOVEP-2023-02/FACTURAS/SEP2'
-    listdbs = get_files_pdf(directorio)
+    try:
+        with open("config.json", "r") as config_file:
+            config = json.load(config_file)
+            directorio = config.get("directorio")
+            if directorio:
+                listfiles = get_files_pdf(directorio)
+            else:
+                print("La configuracion no contiene la ruta del directorio.")
+    except FileNotFoundError:
+        print("El archivo de configuracion 'config.json' no se encuentr")
 
 if __name__ == "__main__":
     main()
