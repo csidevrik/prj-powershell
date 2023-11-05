@@ -164,9 +164,6 @@ function Extract-XMLContent {
     param (
         [Parameter (Mandatory=$false)][string] $FolderPath    
     )
-    # Specifies a path to one or more locations.
-   
-
     $xmlC = Get-Content -Path $FolderPath -Raw
 
     # Declara el texto  del inicio y el fin para la extraccion
@@ -180,7 +177,6 @@ function Extract-XMLContent {
     #Extrae la parte deseada del contenido
     $extractedXML = $xmlC.Substring($startIndex, $endIndex-$startIndex + $endLimit.Length)
     $extractedXMLFac = "<factura>`n$extractedXML`n</factura>"
-
 
     $estab = Select-Xml -Content $extractedXMLFac -XPath "//estab" 
     $ptoEm = Select-Xml -Content $extractedXMLFac -XPath "//ptoEmi"

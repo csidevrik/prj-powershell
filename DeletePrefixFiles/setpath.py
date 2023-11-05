@@ -23,7 +23,7 @@ def main():
             else:
                 print("La configuracion no contiene la ruta del directorio.")
     except FileNotFoundError:
-        print("El archivo de configuracion 'config.json' no se encuentr")
+        print("El archivo de configuracion 'config.json' no se encuentra")
 
 if __name__ == "__main__":
     main()
