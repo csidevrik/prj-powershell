@@ -40,21 +40,26 @@ function Main {
     # }
 
     # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
+<<<<<<< HEAD
     $folderPath = "C:\Users\csigua\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP"
+=======
+    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCTUBRE"
+>>>>>>> a588213c1d61f3922491faabbe2f3193c5f90b0b
 
     # -------------------------------------------------------------------
 
-    # Remove duplicate files
-    Remove-DuplicateFiles   -FolderPath $folderPath
-    Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
-    Move-FailedFiles        -FolderPath $folderPath
+    # # Remove duplicate files
+    # Remove-DuplicateFiles   -FolderPath $folderPath
+    # Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
+    # Move-FailedFiles        -FolderPath $folderPath
     # Ejemplo de uso:
-    Rename-FileswithAttributes -FolderPath $folderPath
+    # Rename-FileswithAttributes -FolderPath $folderPath
+
+    # Get-PDF-WithFirefox -FolderPath $folderPath
+    Get-PDF-WithChrome -FolderPath $folderPath
     
  
 }
-
-
 function Remove-DuplicateFiles {
     param (
         [string]$FolderPath
@@ -76,7 +81,6 @@ function Remove-DuplicateFiles {
         # $group.Group | Select-Object -Skip 1 | ForEach-Object { Remove-Item $_.FullName -Force }
     }
 }
-
 function Remove-PrefixFilesPDF {
     param (
         [string]$FolderPath,
@@ -111,7 +115,6 @@ function Remove-PrefixFilesPDF {
     }
         
 }
-
 function Move-FailedFiles {
     param (
         [string]$FolderPath
@@ -156,14 +159,10 @@ function Move-FailedFiles {
     # Mostrar los archivos no válidos
     # $archivosNoValidos
 }
-
 function Extract-XMLContent {
     param (
         [Parameter (Mandatory=$false)][string] $FolderPath    
     )
-    # Specifies a path to one or more locations.
-   
-
     $xmlC = Get-Content -Path $FolderPath -Raw
 
     # Declara el texto  del inicio y el fin para la extraccion
@@ -177,7 +176,6 @@ function Extract-XMLContent {
     #Extrae la parte deseada del contenido
     $extractedXML = $xmlC.Substring($startIndex, $endIndex-$startIndex + $endLimit.Length)
     $extractedXMLFac = "<factura>`n$extractedXML`n</factura>"
-
 
     $estab = Select-Xml -Content $extractedXMLFac -XPath "//estab" 
     $ptoEm = Select-Xml -Content $extractedXMLFac -XPath "//ptoEmi"
@@ -223,8 +221,52 @@ function Rename-FileswithAttributes {
 
     }
 }
+function Get-PDF-WithFirefox {
+    param(
+        [string] $FolderPath
+    )
+    # Obtener los nombres de todos los pdfs
+    $files = Get-ChildItem -Path $FolderPath
+    $listPdfNames = $files | Sort -Descending -Property LastWriteTime | where {$_.extension -eq ".pdf"}
+    $contador = 0
+      # Abre una nueva instancia de Firefox
+      Start-Process -FilePath "firefox.exe" -ArgumentList "--new-instance"
 
+    foreach ($archivo in $listPdfNames) {
+        $contador++
+        # Write-Host $contador
+        Write-Output $archivo.FullName
+        Start-Process -FilePath "firefox.exe" -ArgumentList "--new-tab", "file://$(Resolve-Path $archivo.FullName)"
+        Write-Output $contador
+        Start-Sleep -Seconds 1
+    }
 
+}
+function Get-PDF-WithChrome {
+    param(
+        [string] $FolderPath
+    )
+    # Obtener los nombres de todos los pdfs
+    $files = Get-ChildItem -Path $FolderPath
+    $listPdfNames = $files | Sort -Descending -Property LastWriteTime | where {$_.extension -eq ".pdf"}
+    $contador = 0
+
+    foreach ($archivo in $listPdfNames) {
+        $contador++
+        # Write-Host $contador
+        Write-Output $archivo.FullName
+        Start-Process -FilePath "chrome.exe" -ArgumentList "--new-tab", "file://$(Resolve-Path $archivo.FullName)"
+        Write-Output $contador
+        Start-Sleep -Seconds 1
+    }
+
+}
+function Get-NamesFacs {
+    param (
+        [string] $FolderPath
+    )
+
+}
 
 
 Main
