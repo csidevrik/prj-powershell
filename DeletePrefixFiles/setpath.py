@@ -13,6 +13,22 @@ def get_files_pdf(path):
     
     return files_pdf
 
+def extract_code_from_filename(filename):
+    regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+    regex2 = "I[0-9]+"
+    # Utilizamos una expresión regular para buscar un patrón específico (cualquier secuencia de letras mayúsculas y números) en el nombre del archivo.
+    match = re.search(regex2, filename)
+
+        
+    if match:
+        # Si se encuentra un patrón, lo extraemos y lo devolvemos.
+        return match.group()
+    else:
+        # Si no se encuentra un patrón, devolvemos None.
+        return None
+
+
+
 def main():
     try:
         with open("config.json", "r") as config_file:

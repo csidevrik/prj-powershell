@@ -1,3 +1,4 @@
+import re
 import flet as ft
 from flet import (
     ElevatedButton,
@@ -48,6 +49,21 @@ def main(page: ft.Page):
         ),
     )
     pass
+
+
+    def extract_code_from_filename(filename):
+        # Utilizamos una expresión regular para buscar un patrón específico (cualquier secuencia de letras mayúsculas y números) en el nombre del archivo.
+        match = re.search(r"I[0-9]+", filename)
+        
+        if match:
+            # Si se encuentra un patrón, lo extraemos y lo devolvemos.
+            return match.group()
+        else:
+            # Si no se encuentra un patrón, devolvemos None.
+            return None
+
+    regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+    regex2 = "I[0-9]+"
 
 
 ft.app(target=main)
