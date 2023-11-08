@@ -1,18 +1,32 @@
 import json
 import os
 import fnmatch
+import xml.etree.ElementTree as ET
+import re
 
 def get_files_pdf(path):
     files_pdf = []
     for (root, dirs, files) in os.walk(path):
         for filename in files:
-            if fnmatch.fnmatch(filename, '*.pdf'):
+            if fnmatch.fnmatch(filename, '*.xml'):
                 file_complete = os.path.join(root,filename)
                 files_pdf.append(file_complete)
                 print(file_complete)
+                # Ejemplo de uso:
+                # xml_file_path = 
+                start_limit = '<infoTributaria>'
+                end_limit = '</infoAdicional>'
+                extracted_xml = extract_xml_content_between_limits(file_complete, start_limit, end_limit)
+
+                if extracted_xml:
+                    print("Contenido XML extraído:")
+                    print(extracted_xml)
+                else:
+                    print("No se pudo extraer el contenido XML.")
     
     return files_pdf
 
+<<<<<<< HEAD
 def extract_code_from_filename(filename):
     regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
     regex2 = "I[0-9]+"
@@ -28,6 +42,61 @@ def extract_code_from_filename(filename):
         return None
 
 
+=======
+def extract_xml_content_between_limits(file_path, start_limit, end_limit):
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            xml_content = file.read()
+
+            # Buscar el contenido entre los límites
+            match = re.search(f"{start_limit}(.*?){end_limit}", xml_content, re.DOTALL)
+
+            if match:
+                extracted_xml = match.group(1)
+                return extracted_xml
+            else:
+                return None
+
+    except FileNotFoundError:
+        print(f"El archivo '{file_path}' no se encontró.")
+    except Exception as e:
+        print(f"Error al procesar el archivo: {e}")
+
+    return None
+
+# def extract_xml_content(file_path):
+#     try:
+#         with open(file_path, "r", encoding="utf-8") as file:
+#             xml_content = file.read()
+#         # Parsea el archivo XML
+#         # tree = ET.parse(xml_content)
+#         # root = tree.getroot()
+#         root = ET.fromstring(xml_content)
+#         # Encuentra el nodo 'infoTributaria'
+#         info_tributaria = root.find('.//infoTributaria')
+
+#         if info_tributaria is not None:
+#             # Encuentra los elementos que necesitas
+#             estab = info_tributaria.find('.//estab')
+#             ptoEm = info_tributaria.find('.//ptoEmi')
+#             secue = info_tributaria.find('.//secuencial')
+#             campo_adicional = root.find('.//campoAdicional[@nombre="Instalacion"]')
+
+#             if estab is not None and ptoEm is not None and secue is not None and campo_adicional is not None:
+#                 # Obtiene el contenido de los elementos
+#                 estab_text = estab.text
+#                 ptoEm_text = ptoEm.text
+#                 secue_text = secue.text
+#                 codig_text = campo_adicional.text
+
+#                 # Crea el nuevo nombre
+#                 newname = f"FAC{estab_text}{ptoEm_text}{secue_text}-{codig_text}"
+#                 return newname
+
+#     except ET.ParseError as e:
+#         print(f"Error al parsear el archivo XML: {e}")
+#     return None
+>>>>>>> 5e4d3ee5b56799dfe381a53846c4a55576466b37
 
 def main():
     try:

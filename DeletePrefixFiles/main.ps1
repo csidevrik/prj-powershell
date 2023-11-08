@@ -40,7 +40,11 @@ function Main {
     # }
 
     # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
-    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEPTIEMBRE"
+<<<<<<< HEAD
+    $folderPath = "C:\Users\csigua\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP"
+=======
+    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCTUBRE"
+>>>>>>> a588213c1d61f3922491faabbe2f3193c5f90b0b
 
     # -------------------------------------------------------------------
 
@@ -51,13 +55,11 @@ function Main {
     # Ejemplo de uso:
     # Rename-FileswithAttributes -FolderPath $folderPath
 
-    Get-PDF-WithFirefox -FolderPath $folderPath
-    # Get-PDF-WithChrome -FolderPath $folderPath
+    # Get-PDF-WithFirefox -FolderPath $folderPath
+    Get-PDF-WithChrome -FolderPath $folderPath
     
  
 }
-
-
 function Remove-DuplicateFiles {
     param (
         [string]$FolderPath
@@ -79,7 +81,6 @@ function Remove-DuplicateFiles {
         # $group.Group | Select-Object -Skip 1 | ForEach-Object { Remove-Item $_.FullName -Force }
     }
 }
-
 function Remove-PrefixFilesPDF {
     param (
         [string]$FolderPath,
@@ -114,7 +115,6 @@ function Remove-PrefixFilesPDF {
     }
         
 }
-
 function Move-FailedFiles {
     param (
         [string]$FolderPath
@@ -159,7 +159,6 @@ function Move-FailedFiles {
     # Mostrar los archivos no válidos
     # $archivosNoValidos
 }
-
 function Extract-XMLContent {
     param (
         [Parameter (Mandatory=$false)][string] $FolderPath    
@@ -222,7 +221,6 @@ function Rename-FileswithAttributes {
 
     }
 }
-
 function Get-PDF-WithFirefox {
     param(
         [string] $FolderPath
@@ -244,7 +242,6 @@ function Get-PDF-WithFirefox {
     }
 
 }
-
 function Get-PDF-WithChrome {
     param(
         [string] $FolderPath
@@ -264,7 +261,6 @@ function Get-PDF-WithChrome {
     }
 
 }
-
 function Get-NamesFacs {
     param (
         [string] $FolderPath
