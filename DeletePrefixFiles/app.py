@@ -16,7 +16,7 @@ def main(page: ft.Page):
     page.description = "Select a directory to save your files."
     page.window_bgcolor = ft.colors.TRANSPARENT
     page.window_frameless = False
-    page.bgcolor = ft.colors.with_opacity(0.75, '#07D2A9')
+    page.bgcolor = ft.colors.with_opacity(0.5, '#07D2A9')
     page.window_height = 500
     page.window_width = 500
     page.window_max_width = 1200

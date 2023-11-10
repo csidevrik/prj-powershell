@@ -26,43 +26,43 @@
           "id": "4",
           "number": "001003043567143",
           "code_service": "I0247958",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "5",
           "number": "001003043567143",
           "code_service": "I0247960",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "6",
           "number": "001003043567143",
           "code_service": "I0247961",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "7",
           "number": "001003043567143",
           "code_service": "I0247971",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "8",
           "number": "001003043567143",
           "code_service": "I0248142",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "7466",
+          "valu_princip": "52.44"
         },
         {
           "id": "9",
           "number": "001003043567143",
           "code_service": "I0247970",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "10",
@@ -75,85 +75,85 @@
           "id": "11",
           "number": "001003043567143",
           "code_service": "I0247969",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "12",
           "number": "001003043567143",
           "code_service": "RDD01974",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "7980",
+          "valu_princip": "45.00"
         },
         {
           "id": "13",
           "number": "001003043567143",
           "code_service": "RDD02235",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8001",
+          "valu_princip": "1872"
         },
         {
           "id": "14",
           "number": "001003043567143",
           "code_service": "RDD02296",
           "code_princip": "8043",
-          "valu_princip": "96.10"
+          "valu_princip": "45.00"
         },
         {
           "id": "15",
           "number": "001003043567143",
           "code_service": "RDD01966",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "7548",
+          "valu_princip": "45.00"
         },
         {
           "id": "16",
           "number": "001003043567143",
           "code_service": "RDD01972",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8039",
+          "valu_princip": "337.60"
         },
         {
           "id": "17",
           "number": "001003043567143",
           "code_service": "RDD01973",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "7548",
+          "valu_princip": "45.00"
         },
         {
           "id": "18",
           "number": "001003043567143",
           "code_service": "I0247955",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "19",
           "number": "001003043567143",
           "code_service": "I0247956",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "20",
           "number": "001003043567143",
           "code_service": "I0247954",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8044",
+          "valu_princip": "64.75"
         },
         {
           "id": "21",
           "number": "001003043567143",
           "code_service": "I0205929",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8041",
+          "valu_princip": "410.10"
         },
         {
           "id": "22",
           "number": "001003043567143",
           "code_service": "I0242176",
-          "code_princip": "8043",
-          "valu_princip": "96.10"
+          "code_princip": "8042",
+          "valu_princip": "176.00"
         }
       ]
     }

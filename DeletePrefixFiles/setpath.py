@@ -14,8 +14,10 @@ def get_files_pdf(path):
                 print(file_complete)
                 # Ejemplo de uso:
                 # xml_file_path = 
-                start_limit = '<infoTributaria>'
-                end_limit = '</infoAdicional>'
+                # start_limit = '<infoTributaria>'
+                # end_limit = '</infoAdicional>'
+                start_limit = '<factura id="comprobante" version="2.1.0">'
+                end_limit = '<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature933451">'
                 extracted_xml = extract_xml_content_between_limits(file_complete, start_limit, end_limit)
 
                 if extracted_xml:
