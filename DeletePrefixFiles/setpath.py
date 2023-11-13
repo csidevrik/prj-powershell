@@ -28,7 +28,6 @@ def get_files_pdf(path):
     
     return files_pdf
 
-<<<<<<< HEAD
 def extract_code_from_filename(filename):
     regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
     regex2 = "I[0-9]+"
@@ -44,7 +43,6 @@ def extract_code_from_filename(filename):
         return None
 
 
-=======
 def extract_xml_content_between_limits(file_path, start_limit, end_limit):
     try:
         with open(file_path, "r", encoding="utf-8") as file:
@@ -98,7 +96,6 @@ def extract_xml_content_between_limits(file_path, start_limit, end_limit):
 #     except ET.ParseError as e:
 #         print(f"Error al parsear el archivo XML: {e}")
 #     return None
->>>>>>> 5e4d3ee5b56799dfe381a53846c4a55576466b37
 
 def main():
     try:
