@@ -6,7 +6,7 @@
 
 # VARIABLES
 # --------------------------------------
-$terminal = "terminal"
+# $terminal = "terminal"
 
 $global:folderPath
 
@@ -40,14 +40,14 @@ function Main {
     # }
 
     # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
-    $folderPath = "C:\Users\csigua\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\MES"
+    $folderPath = "C:\Users\csigua\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCT2"
 
     # -------------------------------------------------------------------
 
     # # Remove duplicate files
-    Remove-DuplicateFiles   -FolderPath $folderPath
-    Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
-    Move-FailedFiles        -FolderPath $folderPath
+    # Remove-DuplicateFiles   -FolderPath $folderPath
+    # Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
+    # Move-FailedFiles        -FolderPath $folderPath
     # Ejemplo de uso:
     Rename-FileswithAttributes -FolderPath $folderPath
 
@@ -179,7 +179,9 @@ function Extract-XMLContent {
     $codig = (Select-Xml -Content $extractedXMLFac -XPath '//campoAdicional[@nombre="Instalacion"]').Node.InnerText
 
     # Crear el nuevo nombre
-    $newname = "FAC$estab$ptoEm$secue-$codig"
+    # $newname = "FAC$estab$ptoEm$secue-$codig"
+    $newname = "$secue"
+
 
     # Rename-Item -Path $FolderPath -NewName "$newname.xml" -Force
     write-host $newname
@@ -226,7 +228,7 @@ function Get-PDF-WithFirefox {
     $listPdfNames = $files | Sort -Descending -Property LastWriteTime | where {$_.extension -eq ".pdf"}
     $contador = 0
       # Abre una nueva instancia de Firefox
-      Start-Process -FilePath "firefox.exe" -ArgumentList "--new-instance"
+    #   Start-Process -FilePath "firefox.exe" -ArgumentList "--new-instance"
 
     foreach ($archivo in $listPdfNames) {
         $contador++
