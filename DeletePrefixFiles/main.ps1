@@ -49,9 +49,9 @@ function Main {
     # Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
     # Move-FailedFiles        -FolderPath $folderPath
     # Ejemplo de uso:
-    Rename-FileswithAttributes -FolderPath $folderPath
+    # Rename-FileswithAttributes -FolderPath $folderPath
 
-    # Get-PDF-WithFirefox -FolderPath $folderPath
+    Get-PDF-WithFirefox -FolderPath $folderPath
     # Get-PDF-WithChrome -FolderPath $folderPath
     
  
@@ -179,8 +179,8 @@ function Extract-XMLContent {
     $codig = (Select-Xml -Content $extractedXMLFac -XPath '//campoAdicional[@nombre="Instalacion"]').Node.InnerText
 
     # Crear el nuevo nombre
-    # $newname = "FAC$estab$ptoEm$secue-$codig"
-    $newname = "$secue"
+    $newname = "FAC$estab$ptoEm$secue-$codig"
+    # $newname = "$secue"
 
 
     # Rename-Item -Path $FolderPath -NewName "$newname.xml" -Force
@@ -238,7 +238,6 @@ function Get-PDF-WithFirefox {
         Write-Output $contador
         Start-Sleep -Seconds 1
     }
-
 }
 function Get-PDF-WithChrome {
     param(

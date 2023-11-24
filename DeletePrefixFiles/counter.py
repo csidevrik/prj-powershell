@@ -9,6 +9,38 @@ from flet import (
     icons,
 )
 
+## SOLO METODOS DE ACCIONES POR COMANDOS
+
+
+def extract_code_from_filename(folderPath):
+# Utilizamos una expresión regular para buscar un patrón específico (cualquier secuencia de letras mayúsculas y números) en el nombre del archivo.
+match = re.search(r"I[0-9]+", folderPath)
+
+if match:
+    # Si se encuentra un patrón, lo extraemos y lo devolvemos.
+    return match.group()
+else:
+    # Si no se encuentra un patrón, devolvemos None.
+    return None
+
+regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+regex2 = "I[0-9]+"
+
+def open_pdf_with_firefox(folderPath):
+    #Obtener los nombres de todos los pdfs
+    files = os.listdir(folderPath)
+    filesPDF = [file for file in files if file.endswith(".pdf")]
+    filesPDF.sort(key=lambda x: os.path.getmtime(os.path.join(folderPath, x)), reverse=True)
+    contador = 0
+    for filePDF in filesPDF:
+        contador += 1
+        pathComplete = os.path.abspath(os.path.join(folderPath, filePDF))
+        print(pathComplete)
+        # Abre el archivo PDF en Firefox
+        subprocess.run(["firefox", "--new-tab", f"file://{pathComplete}"])
+        print(contador)
+        time.sleep(1)
+
 
 def main(page: Page):
     # Pick files dialog
