@@ -13,6 +13,7 @@ from flet import (
     Text,
     icons,
 )
+import xml.etree.ElementTree as ET
 
 ## SOLO METODOS DE ACCIONES POR COMANDOS
 
@@ -141,7 +142,9 @@ def main(page: ft.Page):
         selected_files.update()
 
     pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
-    selected_files = ft.Text()
+    selected_files = Text()
+
+    page.add(selected_files)
 
     # hide all dialogs in overlay
     page.overlay.extend([get_directory_dialog])
@@ -174,4 +177,5 @@ def main(page: ft.Page):
         ),
     )
     pass
+
 ft.app(target=main)
