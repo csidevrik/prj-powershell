@@ -17,11 +17,25 @@ def main(page: ft.Page):
     page.description = "Select a directory to save your files."
     page.window_bgcolor = ft.colors.TRANSPARENT
     page.window_frameless = False
-    page.bgcolor = ft.colors.with_opacity(0.5, '#07D2A9')
+    page.window_title_bar_hidden = True
+    page.bgcolor = ft.colors.with_opacity(0.98, '#01EAD1')
     page.window_height = 500
     page.window_width = 500
     page.window_max_width = 1200
     page.window_max_height = 600
+
+    page.appbar = ft.AppBar(
+        leading = ft.Icon(ft.icons.DOOR_SLIDING),
+        leading_width=40,
+        title=ft.Text("Soneto redentor"),
+        center_title=False,
+        bgcolor=ft.colors.with_opacity(0.98, '#01EAD1')
+    )
+
+    # page.title = ft.Text(
+    #     style= Text.style(ft.colors.with_opacity(0.98, '#01EAD1'))
+    # )
+
     page.update()
 
     # Open directory dialog
