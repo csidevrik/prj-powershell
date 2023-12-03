@@ -6,7 +6,7 @@
 
 # VARIABLES
 # --------------------------------------
-$terminal = "terminal"
+# $terminal = "terminal"
 
 $global:folderPath
 
@@ -40,7 +40,11 @@ function Main {
     # }
 
     # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
+<<<<<<< HEAD
     $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCTUBRE"
+=======
+    $folderPath = "C:\Users\csigua\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCT2"
+>>>>>>> ac90733e3cb3cd7be0c61d3a8b945552e4f89192
 
     # -------------------------------------------------------------------
 
@@ -51,8 +55,13 @@ function Main {
     # Ejemplo de uso:
     # Rename-FileswithAttributes -FolderPath $folderPath
 
+<<<<<<< HEAD
     # Get-PDF-WithFirefox -FolderPath $folderPath
     Get-PDF-WithChrome -FolderPath $folderPath
+=======
+    Get-PDF-WithFirefox -FolderPath $folderPath
+    # Get-PDF-WithChrome -FolderPath $folderPath
+>>>>>>> ac90733e3cb3cd7be0c61d3a8b945552e4f89192
     
  
 }
@@ -180,6 +189,8 @@ function Extract-XMLContent {
 
     # Crear el nuevo nombre
     $newname = "FAC$estab$ptoEm$secue-$codig"
+    # $newname = "$secue"
+
 
     # Rename-Item -Path $FolderPath -NewName "$newname.xml" -Force
     write-host $newname
@@ -226,7 +237,7 @@ function Get-PDF-WithFirefox {
     $listPdfNames = $files | Sort -Descending -Property LastWriteTime | where {$_.extension -eq ".pdf"}
     $contador = 0
       # Abre una nueva instancia de Firefox
-      Start-Process -FilePath "firefox.exe" -ArgumentList "--new-instance"
+    #   Start-Process -FilePath "firefox.exe" -ArgumentList "--new-instance"
 
     foreach ($archivo in $listPdfNames) {
         $contador++
@@ -236,7 +247,6 @@ function Get-PDF-WithFirefox {
         Write-Output $contador
         Start-Sleep -Seconds 1
     }
-
 }
 function Get-PDF-WithChrome {
     param(
