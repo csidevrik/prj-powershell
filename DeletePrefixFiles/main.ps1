@@ -40,7 +40,11 @@ function Main {
     # }
 
     # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
+<<<<<<< HEAD
+    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCTUBRE"
+=======
     $folderPath = "C:\Users\csigua\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCT2"
+>>>>>>> ac90733e3cb3cd7be0c61d3a8b945552e4f89192
 
     # -------------------------------------------------------------------
 
@@ -51,8 +55,13 @@ function Main {
     # Ejemplo de uso:
     # Rename-FileswithAttributes -FolderPath $folderPath
 
+<<<<<<< HEAD
+    # Get-PDF-WithFirefox -FolderPath $folderPath
+    Get-PDF-WithChrome -FolderPath $folderPath
+=======
     Get-PDF-WithFirefox -FolderPath $folderPath
     # Get-PDF-WithChrome -FolderPath $folderPath
+>>>>>>> ac90733e3cb3cd7be0c61d3a8b945552e4f89192
     
  
 }
