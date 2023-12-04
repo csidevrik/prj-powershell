@@ -54,6 +54,19 @@ def remove_duplicate_files(folder_path):
             if file_path != oldest_file:
                 os.remove(file_path)
 
+def remove_prefix_files_pdf(folder_path, prefix):
+    # OBtener la lista de archivos en la carpeta
+    files = os.listdir(folder_path)
+    files_pdf = [file for file in files if file.lower().endswith(".pdf")]
+
+    #Iterar a traves de los archivos PDF y renombrarlos
+    for file_pdf in file_pdf:
+        Obtener el nombre del archivo sin extension
+        nombre_sin_extension = os.path.splitext(file_pdf)[0]
+
+
+
+
 def extract_xml_content(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         xml_content = file.read()

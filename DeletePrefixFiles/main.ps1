@@ -40,22 +40,18 @@ function Main {
     # }
 
     # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
-<<<<<<< HEAD
-    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCTUBRE"
-=======
-    $folderPath = "C:\Users\csigua\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\OCT2"
->>>>>>> ac90733e3cb3cd7be0c61d3a8b945552e4f89192
+    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\NOV"
 
     # -------------------------------------------------------------------
 
     # # Remove duplicate files
     # Remove-DuplicateFiles   -FolderPath $folderPath
-    # Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
+    Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
     # Move-FailedFiles        -FolderPath $folderPath
     # Ejemplo de uso:
     # Rename-FileswithAttributes -FolderPath $folderPath
 
-    Get-PDF-WithFirefox -FolderPath $folderPath
+    # Get-PDF-WithFirefox -FolderPath $folderPath
     # Get-PDF-WithChrome -FolderPath $folderPath
     
  
