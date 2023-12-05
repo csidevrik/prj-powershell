@@ -32,7 +32,6 @@ def extract_code_from_filename(folderPath):
 regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
 regex2 = "I[0-9]+"
 
-
 def remove_duplicate_files(folder_path):
     files = os.listdir(folder_path)
     # Agrupa los archivos por su valor de hash SHA-256
@@ -53,6 +52,35 @@ def remove_duplicate_files(folder_path):
         for file_path in file_group:
             if file_path != oldest_file:
                 os.remove(file_path)
+
+def remove_prefix_files_pdf(folder_path, prefix):
+    # Obtener la lista de archivos en la carpeta
+    files = os.listdir(folder_path)
+    files_pdf = [file for file in files if file.lower().endswith(".pdf")]
+
+    # Iterar a través de los archivos PDF y renombrarlos
+    for file_pdf in files_pdf:
+        # Obtener el nombre del archivo sin extensión
+        nombre_sin_extension = os.path.splitext(file_pdf)[0]
+
+        # Verificar si el nombre del archivo PDF comienza con el prefijo dado
+        if nombre_sin_extension.startswith(prefix):
+            # Eliminar el prefijo del nombre del archivo PDF
+            nuevo_nombre = nombre_sin_extension[len(prefix):]
+
+            # Construir el nuevo nombre del archivo PDF
+            nuevo_nombre_pdf = nuevo_nombre + ".pdf"
+
+            # Ruta completa del archivo original y nuevo
+            ruta_archivo_original = os.path.join(folder_path, file_pdf)
+            ruta_archivo_nuevo = os.path.join(folder_path, nuevo_nombre_pdf)
+
+            # Renombrar el archivo PDF
+            os.rename(ruta_archivo_original, ruta_archivo_nuevo)
+
+# Uso de la función
+# remove_prefix_files_pdf("Ruta/De/Tu/Carpeta", "RIDE_")
+
 
 def extract_xml_content(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -105,10 +133,10 @@ def open_pdf_with_chrome(folder_path):
     open_pdf_with_browser(folder_path, "start chrome")      
 
 def main(page: ft.Page):
-    page.title = "Octaba directory"
-    page.description = "Select a directory to save your files."
+    page.title = "Octaba FACS manager"
+    page.description = "Select a directory to work with your files."
     # page.window_bgcolor = ft.colors.TRANSPARENT
-    page.window_frameless = False
+    page.window_frameless = True
     page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
     page.window_height = 500
     page.window_width = 1000
@@ -138,6 +166,7 @@ def main(page: ft.Page):
             ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)),
             ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)),
             ft.PopupMenuItem(icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)),
+            ft.PopupMenuItem(icon=ft.icons.TEXT_FIELDS,  text="Remove prefix RIDE_ from PDF files", on_click=lambda e: remove_prefix_files_pdf(directory_path.value, "RIDE_")),
         ]
     )
     page.add(pb)
