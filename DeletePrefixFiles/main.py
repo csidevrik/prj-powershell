@@ -32,6 +32,7 @@ def extract_code_from_filename(folderPath):
 regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
 regex2 = "I[0-9]+"
 
+
 def remove_duplicate_files(folder_path):
     files = os.listdir(folder_path)
     # Agrupa los archivos por su valor de hash SHA-256
@@ -54,7 +55,6 @@ def remove_duplicate_files(folder_path):
                 os.remove(file_path)
 
 def remove_prefix_files_pdf(folder_path, prefix):
-<<<<<<< HEAD
     # Obtener la lista de archivos en la carpeta
     files = os.listdir(folder_path)
     files_pdf = [file for file in files if file.lower().endswith(".pdf")]
@@ -79,21 +79,29 @@ def remove_prefix_files_pdf(folder_path, prefix):
             # Renombrar el archivo PDF
             os.rename(ruta_archivo_original, ruta_archivo_nuevo)
 
-# Uso de la función
-# remove_prefix_files_pdf("Ruta/De/Tu/Carpeta", "RIDE_")
-=======
-    # OBtener la lista de archivos en la carpeta
+def rename_files_with_attributes(folder_path):
+    # Ruta de la carpeta "corregir"
+    ruta_corregir = os.path.join(folder_path, "corregir")
+    print(ruta_corregir)
+
+    # Lista de archivos en la carpeta
     files = os.listdir(folder_path)
-    files_pdf = [file for file in files if file.lower().endswith(".pdf")]
 
-    #Iterar a traves de los archivos PDF y renombrarlos
-    for file_pdf in file_pdf:
-        Obtener el nombre del archivo sin extension
-        nombre_sin_extension = os.path.splitext(file_pdf)[0]
+    # Filtra los archivos .xml en la carpeta
+    xml_files = [file for file in files if file.lower().endswith(".xml")]
 
+    for xml_file in xml_files:
+        # Obtener el nuevo nombre del archivo XML
+        new_name = extract_xml_content(os.path.join(folder_path, xml_file))
 
->>>>>>> 0100df83167c4f5489a5ce6ac1721dbc61d108cb
+        # Construir el nombre del archivo PDF con la misma base
+        pdf_file_name = os.path.splitext(xml_file)[0] + ".pdf"
 
+        # Renombrar el archivo XML
+        os.rename(os.path.join(folder_path, xml_file), os.path.join(folder_path, f"{new_name}.xml"))
+
+        # Renombrar el archivo PDF
+        os.rename(os.path.join(folder_path, pdf_file_name), os.path.join(folder_path, f"{new_name}.pdf"))
 
 def extract_xml_content(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -121,9 +129,7 @@ def extract_xml_content(file_path):
 
     # Crea el nuevo nombre
     new_name = f"FAC{estab}{pto_em}{secue}-{codigo}"
-    # new_name = secue
 
-    # Imprime el nuevo nombre
     print(new_name)
     return new_name
 
@@ -146,10 +152,10 @@ def open_pdf_with_chrome(folder_path):
     open_pdf_with_browser(folder_path, "start chrome")      
 
 def main(page: ft.Page):
-    page.title = "Octaba FACS manager"
-    page.description = "Select a directory to work with your files."
+    page.title = "Octaba directory"
+    page.description = "Select a directory to save your files."
     # page.window_bgcolor = ft.colors.TRANSPARENT
-    page.window_frameless = True
+    page.window_frameless = False
     page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
     page.window_height = 500
     page.window_width = 1000
@@ -161,7 +167,7 @@ def main(page: ft.Page):
         leading_width=40,
         title=ft.Text("Soneto redentor"),
         center_title=False,
-        bgcolor=ft.colors.with_opacity(0.98, '#01EAD1')
+        bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
     )
 
     # page.title = ft.Text(
@@ -179,7 +185,8 @@ def main(page: ft.Page):
             ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)),
             ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)),
             ft.PopupMenuItem(icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)),
-            ft.PopupMenuItem(icon=ft.icons.TEXT_FIELDS,  text="Remove prefix RIDE_ from PDF files", on_click=lambda e: remove_prefix_files_pdf(directory_path.value, "RIDE_")),
+            ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix dolo", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")),
+            ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files with ", on_click=lambda e: rename_files_with_attributes(directory_path.value)),
         ]
     )
     page.add(pb)

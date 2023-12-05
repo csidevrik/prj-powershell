@@ -40,13 +40,17 @@ function Main {
     # }
 
     # $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\SEP\RDD"
+<<<<<<< HEAD
     $folderPath = "C:\Users\csigua\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\NOV"
+=======
+    $folderPath = "C:\Users\adminos\OneDrive\2A-JOB02-EMOVEP\2023\CONTRATOS\RE-EP-EMOVEP-2023-02\FACTURAS\NOV"
+>>>>>>> 0100df83167c4f5489a5ce6ac1721dbc61d108cb
 
     # -------------------------------------------------------------------
 
     # # Remove duplicate files
     # Remove-DuplicateFiles   -FolderPath $folderPath
-    # Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
+    Remove-PrefixFilesPDF   -FolderPath $folderPath -Prefix 'RIDE_'
     # Move-FailedFiles        -FolderPath $folderPath
     # Ejemplo de uso:
     Rename-FileswithAttributes -FolderPath $folderPath
