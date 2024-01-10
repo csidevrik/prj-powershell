@@ -15,7 +15,7 @@ from flet import (
 )
 import xml.etree.ElementTree as ET
 
-## SOLO METODOS DE ACCIONES POR COMANDOS
+## SOLO METODOS DE ACCIONES POR COMANDOS y OTROS MAS
 
 
 def extract_code_from_filename(folderPath):

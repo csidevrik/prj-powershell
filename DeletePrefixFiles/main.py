@@ -29,7 +29,9 @@ def extract_code_from_filename(folderPath):
         # Si no se encuentra un patrón, devolvemos None.
         return None
 
-regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+# regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+regex1 = r"RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+
 regex2 = "I[0-9]+"
 
 
@@ -185,8 +187,8 @@ def main(page: ft.Page):
             ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)),
             ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)),
             ft.PopupMenuItem(icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)),
-            ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix dolo", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")),
-            ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files with ", on_click=lambda e: rename_files_with_attributes(directory_path.value)),
+            ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")),
+            ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)),
         ]
     )
     page.add(pb)
