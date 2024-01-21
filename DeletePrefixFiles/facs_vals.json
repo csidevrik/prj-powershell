@@ -1,0 +1,139 @@
+{
+    "facs": {
+        "registro":
+        [
+            {
+              "NUM": 1,
+              "NUMBERFAC": "FAC",
+              "CODE INST": "I0247954",
+              "VALUE SERV": 80
+            },
+            {
+              "NUM": 2,
+              "NUMBERFAC": "FAC",
+              "CODE INST": "I0247955",
+              "VALUE SERV": 80
+            },
+            {
+              "NUM": 3,
+              "NUMBERFAC": "FAC",
+              "CODE INST": "I0247956",
+              "VALUE SERV": 80
+            },
+            {
+              "NUM": 4,
+              "NUMBERFAC": "FAC",
+              "CODE INST": "I0247958",
+              "VALUE SERV": 80
+            },
+            {
+              "NUM": 5,
+              "NUMBERFAC": "FAC001003044264314",
+              "CODE INST": "I0247960",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 6,
+              "NUMBERFAC": "FAC001003044264315",
+              "CODE INST": "I0247961",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 7,
+              "NUMBERFAC": "FAC001003044264316",
+              "CODE INST": "I0247963",
+              "VALUE SERV": 96.1
+            },
+            {
+              "NUM": 8,
+              "NUMBERFAC": "FAC001003044264317",
+              "CODE INST": "I0247964",
+              "VALUE SERV": 96.1
+            },
+            {
+              "NUM": 9,
+              "NUMBERFAC": "FAC001003044264318",
+              "CODE INST": "I0247965",
+              "VALUE SERV": 96.1
+            },
+            {
+              "NUM": 10,
+              "NUMBERFAC": "FAC001003044264321",
+              "CODE INST": "I0247968",
+              "VALUE SERV": 96.1
+            },
+            {
+              "NUM": 11,
+              "NUMBERFAC": "FAC001003044264322",
+              "CODE INST": "I0247969",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 12,
+              "NUMBERFAC": "FAC001003044264323",
+              "CODE INST": "I0247970",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 13,
+              "NUMBERFAC": "FAC001003044264324",
+              "CODE INST": "I0247971",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 14,
+              "NUMBERFAC": "FAC001003044239204",
+              "CODE INST": "I0205929",
+              "VALUE SERV": 205.2
+            },
+            {
+              "NUM": 15,
+              "NUMBERFAC": "FAC001003044259894",
+              "CODE INST": "I0242176",
+              "VALUE SERV": 99.73
+            },
+            {
+              "NUM": 16,
+              "NUMBERFAC": "FAC001003044264478",
+              "CODE INST": "I0248142",
+              "VALUE SERV": 52.44
+            },
+            {
+              "NUM": 17,
+              "NUMBERFAC": "FAC001003044191981",
+              "CODE INST": "RDD02235",
+              "VALUE SERV": 1872
+            },
+            {
+              "NUM": 18,
+              "NUMBERFAC": "FAC001003044191793",
+              "CODE INST": "RDD01972",
+              "VALUE SERV": 337.6
+            },
+            {
+              "NUM": 19,
+              "NUMBERFAC": "FAC001003044191794",
+              "CODE INST": "RDD01973",
+              "VALUE SERV": 45
+            },
+            {
+              "NUM": 20,
+              "NUMBERFAC": "FAC001003044191795",
+              "CODE INST": "RDD01974",
+              "VALUE SERV": 45
+            },
+            {
+              "NUM": 21,
+              "NUMBERFAC": "FAC001003044191792",
+              "CODE INST": "RDD01966",
+              "VALUE SERV": 45
+            },
+            {
+              "NUM": 22,
+              "NUMBERFAC": "FAC001003044191998",
+              "CODE INST": "RDD02296",
+              "VALUE SERV": 45
+            }
+           ]
+        }
+    }

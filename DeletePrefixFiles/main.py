@@ -17,6 +17,11 @@ import xml.etree.ElementTree as ET
 
 ## SOLO METODOS DE ACCIONES POR COMANDOS
 
+class Registro:
+    def __init__(self, code_inst, number_fac, value_serv):
+        self.code_inst = code_inst
+        self.number_fac = number_fac
+        self.value_serv = value_serv
 
 def extract_code_from_filename(folderPath):
     # Utilizamos una expresión regular para buscar un patrón específico (cualquier secuencia de letras mayúsculas y números) en el nombre del archivo.
@@ -80,6 +85,67 @@ def remove_prefix_files_pdf(folder_path, prefix):
 
             # Renombrar el archivo PDF
             os.rename(ruta_archivo_original, ruta_archivo_nuevo)
+
+def update_json_with_xml_data(directory_path, json_path):
+    # Cargar el archivo JSON
+    with open(json_path, 'r') as json_file:
+        data = json.load(json_file)
+
+    # Iterar sobre los archivos XML en el directorio
+    for filename in os.listdir(directory_path):
+        if filename.lower().endswith('.xml'):
+            xml_file_path = os.path.join(directory_path, filename)
+
+            # Obtener datos de la factura del archivo XML
+            factura_xml = extract_xml_data(xml_file_path)
+
+            # Buscar el registro correspondiente en el archivo JSON
+            for registro in data["facs"]["registro"]:
+                if registro.code_inst == factura_xml.code_inst:
+                    # Actualizar los valores en el registro del JSON
+                    registro.number_fac = factura_xml.number_fac
+                    registro.value_serv = factura_xml.value_serv
+                    break  # Romper el bucle una vez que se encuentra el registro correspondiente
+
+    # Guardar el archivo JSON actualizado
+    with open(json_path, 'w') as json_file:
+        json.dump(data, json_file, indent=2)
+
+def extract_xml_data(xml_file_path):
+    with open(xml_file_path, 'r', encoding='utf-8') as file:
+        xml_content = file.read()
+    # Declara el texto del inicio y el fin para la extracción
+    start_limit = '<infoTributaria>'
+    end_limit = '</infoAdicional>'
+
+    # Encuentra los índices de inicio y fin
+    start_index = xml_content.find(start_limit)
+    end_index = xml_content.find(end_limit, start_index)
+
+    # Extrae la parte deseada del contenido
+    extracted_xml = xml_content[start_index:end_index + len(end_limit)]
+    extracted_xml_fac = f"<factura>\n{extracted_xml}\n</factura>"
+
+    root = ET.fromstring(extracted_xml_fac)
+
+    # Obtén los elementos deseados usando XPath
+    estab = root.find(".//estab").text
+    pto_em = root.find(".//ptoEmi").text
+    secue = root.find(".//secuencial").text
+    codigo = root.find('.//campoAdicional[@nombre="Instalacion"]').text
+
+    numero_factura = f"FAC{estab}{pto_em}{secue}"
+
+
+    valor_servicio = root.find(".//totalSinImpuestos").text
+
+    # Retornar un objeto Registro con los datos relevantes
+    print(codigo)
+    print(numero_factura)
+    print(valor_servicio)
+
+    return Registro(code_inst=codigo, number_fac=numero_factura, value_serv=valor_servicio)
+
 
 def rename_files_with_attributes(folder_path):
     # Ruta de la carpeta "corregir"
@@ -154,8 +220,9 @@ def open_pdf_with_chrome(folder_path):
     open_pdf_with_browser(folder_path, "start chrome")      
 
 def main(page: ft.Page):
+    #Pick files dialog
     page.title = "Octaba directory"
-    page.description = "Select a directory to save your files."
+    page.description = "Save app for facturas."
     # page.window_bgcolor = ft.colors.TRANSPARENT
     page.window_frameless = False
     page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
@@ -167,7 +234,7 @@ def main(page: ft.Page):
     page.appbar = ft.AppBar(
         leading = ft.Icon(ft.icons.DOOR_SLIDING),
         leading_width=40,
-        title=ft.Text("Soneto redentor"),
+        title=ft.Text("App facturas"),
         center_title=False,
         bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
     )
