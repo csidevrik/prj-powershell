@@ -14,7 +14,7 @@ from flet import (
     icons,
 )
 import xml.etree.ElementTree as ET
-
+yield
 ## SOLO METODOS DE ACCIONES POR COMANDOS
 
 class Registro:
@@ -217,96 +217,98 @@ def open_pdf_with_firefox(folder_path):
     open_pdf_with_browser(folder_path, "start firefox")
 
 def open_pdf_with_chrome(folder_path):
-    open_pdf_with_browser(folder_path, "start chrome")      
+    open_pdf_with_browser(folder_path, "start chrome")  
 
-def main(page: ft.Page):
-    #Pick files dialog
-    page.title = "Octaba directory"
-    page.description = "Save app for facturas."
-    # page.window_bgcolor = ft.colors.TRANSPARENT
-    page.window_frameless = False
-    page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
-    page.window_height = 500
-    page.window_width = 1000
-    page.window_max_width = 1200
-    page.window_max_height = 600
 
-    page.appbar = ft.AppBar(
-        leading = ft.Icon(ft.icons.DOOR_SLIDING),
-        leading_width=40,
-        title=ft.Text("App facturas"),
-        center_title=False,
-        bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
-    )
+if __name__ == "__main__":
+    # Flet application for desktop GUI definition
+    def main(page: ft.Page):
+        #Pick files dialog
+        page.title = "Octaba facturas"
+        page.padding = 0
+        page.description = "Save app for facturas."
+        # page.window_bgcolor = ft.colors.TRANSPARENT
+        page.window_frameless = False
+        page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
+        page.window_height = 500
+        page.window_width = 1000
+        page.window_max_width = 1200
+        page.window_max_height = 600
 
-    # page.title = ft.Text(
-    #     style= Text.style(ft.colors.with_opacity(0.98, '#01EAD1'))
-    # )
+        page.appbar = ft.AppBar(
+            leading = ft.Icon(ft.icons.DOOR_SLIDING),
+            leading_width=40,
+            title=ft.Text("App facturas"),
+            center_title=False,
+            bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
+        )
 
-    page.update()
+        # page.title = ft.Text(
+        #     style= Text.style(ft.colors.with_opacity(0.98, '#01EAD1'))
+        # )
 
-    def check_item_clicked(e):
-        e.control.checked = not e.control.checked
         page.update()
 
-    pb = ft.PopupMenuButton(
-        items=[
-            ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)),
-            ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)),
-            ft.PopupMenuItem(icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)),
-            ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")),
-            ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)),
-        ]
-    )
-    page.add(pb)
+        def check_item_clicked(e):
+            e.control.checked = not e.control.checked
+            page.update()
 
-    # Open directory dialog
-    def get_directory_result(e: FilePickerResultEvent):
-        directory_path.value = e.path if e.path else "Cancelled!"
-        directory_path.update()
-
-    get_directory_dialog = FilePicker(on_result=get_directory_result)
-    directory_path = Text()
-
-    def pick_files_result(e: FilePickerResultEvent):
-        selected_files.value = (",".join(map(lambda f: f.name, e.files )) if e.files else "Canceled")
-        selected_files.update()
-
-    pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
-    selected_files = Text()
-
-    page.add(selected_files)
-
-    # hide all dialogs in overlay
-    page.overlay.extend([get_directory_dialog])
-    page.overlay.append(pick_files_dialog)
-
-    page.add(
-        Row(
-            
-        ),
-        Row(
-            [
-                ElevatedButton(
-                    "Open directory",
-                    icon=icons.FOLDER_OPEN,
-                    on_click=lambda _: get_directory_dialog.get_directory_path(),
-                    disabled=page.web,
-                ),
-                ElevatedButton(
-                    "Pick files",
-                    icon=icons.UPLOAD_FILE,
-                    on_click=lambda _: pick_files_dialog.pick_files(allow_multiple=False), 
-                    disabled=page.web,
-                ),
+        pb = ft.PopupMenuButton(
+            items=[
+                ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)),
+                ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)),
+                ft.PopupMenuItem(icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)),
+                ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")),
+                ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)),
             ]
-        ),
-        Row(
-            [
-                directory_path,
-            ]
-        ),
-    )
-    pass
+        )
+        page.add(pb)
 
-ft.app(target=main)
+        # Open directory dialog
+        def get_directory_result(e: FilePickerResultEvent):
+            directory_path.value = e.path if e.path else "Cancelled!"
+            directory_path.update()
+
+        get_directory_dialog = FilePicker(on_result=get_directory_result)
+        directory_path = Text()
+
+        def pick_files_result(e: FilePickerResultEvent):
+            selected_files.value = (",".join(map(lambda f: f.name, e.files )) if e.files else "Canceled")
+            selected_files.update()
+
+        pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
+        selected_files = Text()
+
+        page.add(selected_files)
+
+        # hide all dialogs in overlay
+        page.overlay.extend([get_directory_dialog])
+        page.overlay.append(pick_files_dialog)
+
+        page.add(
+            Row(
+                
+            ),
+            Row(
+                [
+                    ElevatedButton(
+                        "Open directory",
+                        icon=icons.FOLDER_OPEN,
+                        on_click=lambda _: get_directory_dialog.get_directory_path(),
+                        disabled=page.web,
+                    ),
+                    ElevatedButton(
+                        "Pick files",
+                        icon=icons.UPLOAD_FILE,
+                        on_click=lambda _: pick_files_dialog.pick_files(allow_multiple=False), 
+                        disabled=page.web,
+                    ),
+                ]
+            ),
+            Row(
+                [
+                    directory_path,
+                ]
+            ),
+        )
+    ft.app(target=main)
