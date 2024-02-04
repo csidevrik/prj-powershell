@@ -26,18 +26,12 @@ class Registro:
 def extract_code_from_filename(folderPath):
     # Utilizamos una expresión regular para buscar un patrón específico (cualquier secuencia de letras mayúsculas y números) en el nombre del archivo.
     match = re.search(r"I[0-9]+", folderPath)
-    
     if match:
         # Si se encuentra un patrón, lo extraemos y lo devolvemos.
         return match.group()
     else:
         # Si no se encuentra un patrón, devolvemos None.
         return None
-
-# regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
-regex1 = r"RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
-
-regex2 = "I[0-9]+"
 
 
 def remove_duplicate_files(folder_path):
@@ -146,7 +140,6 @@ def extract_xml_data(xml_file_path):
 
     return Registro(code_inst=codigo, number_fac=numero_factura, value_serv=valor_servicio)
 
-
 def rename_files_with_attributes(folder_path):
     # Ruta de la carpeta "corregir"
     ruta_corregir = os.path.join(folder_path, "corregir")
@@ -242,10 +235,6 @@ if __name__ == "__main__":
             center_title=False,
             bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
         )
-
-        # page.title = ft.Text(
-        #     style= Text.style(ft.colors.with_opacity(0.98, '#01EAD1'))
-        # )
 
         page.update()
 
