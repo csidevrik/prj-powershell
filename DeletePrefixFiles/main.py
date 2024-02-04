@@ -14,7 +14,7 @@ from flet import (
     icons,
 )
 import xml.etree.ElementTree as ET
-yield
+
 ## SOLO METODOS DE ACCIONES POR COMANDOS
 
 class Registro:
