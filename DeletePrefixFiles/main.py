@@ -15,6 +15,10 @@ from flet import (
 )
 import xml.etree.ElementTree as ET
 
+
+# regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+regex1 = r"RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+regex2 = "I[0-9]+"
 ## SOLO METODOS DE ACCIONES POR COMANDOS
 
 class Registro:
@@ -219,7 +223,7 @@ if __name__ == "__main__":
         #Pick files dialog
         page.title = "Octaba facturas"
         page.padding = 0
-        page.description = "Save app for facturas."
+        page.description = "APP for try facturas"
         # page.window_bgcolor = ft.colors.TRANSPARENT
         page.window_frameless = False
         page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
@@ -230,17 +234,17 @@ if __name__ == "__main__":
 
         page.appbar = ft.AppBar(
             leading = ft.Icon(ft.icons.DOOR_SLIDING),
-            leading_width=40,
+            leading_width=100,
             title=ft.Text("App facturas"),
-            center_title=False,
+            center_title=True,
             bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
         )
 
         page.update()
 
-        def check_item_clicked(e):
-            e.control.checked = not e.control.checked
-            page.update()
+        # def check_item_clicked(e):
+        #     e.control.checked = not e.control.checked
+        #     page.update()
 
         pb = ft.PopupMenuButton(
             items=[
@@ -262,12 +266,15 @@ if __name__ == "__main__":
         directory_path = Text()
 
         def pick_files_result(e: FilePickerResultEvent):
-            selected_files.value = (",".join(map(lambda f: f.name, e.files )) if e.files else "Canceled")
+            selected_files.value = (
+                ",".join(map(lambda f: f.name, e.files )) if e.files else "Canceled!"
+            )
             selected_files.update()
 
         pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
         selected_files = Text()
 
+        page.add(directory_path)
         page.add(selected_files)
 
         # hide all dialogs in overlay
@@ -285,18 +292,21 @@ if __name__ == "__main__":
                         icon=icons.FOLDER_OPEN,
                         on_click=lambda _: get_directory_dialog.get_directory_path(),
                         disabled=page.web,
-                    ),
-                    ElevatedButton(
-                        "Pick files",
-                        icon=icons.UPLOAD_FILE,
-                        on_click=lambda _: pick_files_dialog.pick_files(allow_multiple=False), 
-                        disabled=page.web,
-                    ),
+                    ), 
+                    directory_path,
                 ]
             ),
             Row(
-                [
-                    directory_path,
+                [   
+                    ElevatedButton(
+                        "Pick files",
+                        icon=icons.UPLOAD_FILE,
+                        on_click=lambda _: pick_files_dialog.pick_files(
+                            allow_multiple=True
+                        ), 
+                        disabled=page.web,
+                    ),
+                    selected_files,
                 ]
             ),
         )

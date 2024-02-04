@@ -54,15 +54,15 @@ def main(page: Page):
             ]
         ),
         Row(
-                [
-                    ElevatedButton(
-                        "Save file",
-                        icon=icons.SAVE,
-                        on_click=lambda _: save_file_dialog.save_file(),
-                        disabled=page.web,
-                    ),
-                    save_file_path,
-                ]
+            [
+                ElevatedButton(
+                    "Save file",
+                    icon=icons.SAVE,
+                    on_click=lambda _: save_file_dialog.save_file(),
+                    disabled=page.web,
+                ),
+                save_file_path,
+            ]
         ),
         Row(
             [
