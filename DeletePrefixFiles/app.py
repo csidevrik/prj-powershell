@@ -54,7 +54,6 @@ def remove_duplicate_files(folder_path):
                 os.remove(file_path)
 
 def remove_prefix_files_pdf(folder_path, prefix):
-<<<<<<< HEAD
     # Obtener la lista de archivos en la carpeta
     files = os.listdir(folder_path)
     files_pdf = [file for file in files if file.lower().endswith(".pdf")]
@@ -79,20 +78,7 @@ def remove_prefix_files_pdf(folder_path, prefix):
             # Renombrar el archivo PDF
             os.rename(ruta_archivo_original, ruta_archivo_nuevo)
 
-# Uso de la función
-# remove_prefix_files_pdf("Ruta/De/Tu/Carpeta", "RIDE_")
-=======
-    # OBtener la lista de archivos en la carpeta
-    files = os.listdir(folder_path)
-    files_pdf = [file for file in files if file.lower().endswith(".pdf")]
 
-    #Iterar a traves de los archivos PDF y renombrarlos
-    for file_pdf in file_pdf:
-        Obtener el nombre del archivo sin extension
-        nombre_sin_extension = os.path.splitext(file_pdf)[0]
-
-
->>>>>>> 0100df83167c4f5489a5ce6ac1721dbc61d108cb
 
 
 def extract_xml_content(file_path):
