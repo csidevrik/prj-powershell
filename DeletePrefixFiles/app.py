@@ -20,7 +20,7 @@ import xml.etree.ElementTree as ET
 # regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
 regex1 = r"RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
 regex2 = "I[0-9]+"
-## SOLO METODOS DE ACCIONES POR COMANDOS
+## SOLO METODOS DE ACCIONES POR COMANDOSy metodos
 
 class Registro:
     def __init__(self, code_inst, number_fac, value_serv):
