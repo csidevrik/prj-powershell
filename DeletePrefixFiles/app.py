@@ -1,3 +1,4 @@
+import json
 import hashlib
 import os
 import re
@@ -108,6 +109,38 @@ def update_json_with_xml_data(directory_path, json_path):
     # Guardar el archivo JSON actualizado
     with open(json_path, 'w') as json_file:
         json.dump(data, json_file, indent=2)
+
+def process_all_xml_files(directory_path):
+    registros = []
+
+    # Asegúrate de que el directorio exista
+    if not os.path.exists(directory_path):
+        print(f"El directorio {directory_path} no existe.")
+        return
+
+    # Recorre todos los archivos en el directorio
+    for filename in os.listdir(directory_path):
+        if filename.endswith(".xml"):
+            xml_file_path = os.path.join(directory_path, filename)
+
+            # Extrae los datos del archivo XML
+            registro = extract_xml_data(xml_file_path)
+
+            # Agrega el registro a la lista
+            registros.append({
+                'code_inst': registro.code_inst,
+                'number_fac': registro.number_fac,
+                'value_serv': registro.value_serv
+            })
+
+    # Guarda la lista de registros en un archivo JSON
+    json_path = os.path.join(directory_path, 'registros.json')
+    with open(json_path, 'w') as json_file:
+        json.dump(registros, json_file, indent=4)
+
+    print(f"Se han procesado los archivos XML en {directory_path}.")
+    print(f"Se han guardado los registros en {json_path}.")
+
 
 def extract_xml_data(xml_file_path):
     with open(xml_file_path, 'r', encoding='utf-8') as file:
@@ -248,11 +281,24 @@ if __name__ == "__main__":
 
         pb = ft.PopupMenuButton(
             items=[
-                ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)),
-                ft.PopupMenuItem(icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)),
-                ft.PopupMenuItem(icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)),
-                ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")),
-                ft.PopupMenuItem(icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)),
+                ft.PopupMenuItem(
+                    icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files for json", on_click=lambda e: process_all_xml_files(directory_path.value)
+                    ),
             ]
         )
         page.add(pb)
