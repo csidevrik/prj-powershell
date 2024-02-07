@@ -1,3 +1,4 @@
+import csv
 import json
 import hashlib
 import os
@@ -5,6 +6,7 @@ import re
 import subprocess
 import time
 import flet as ft
+import xml.etree.ElementTree as ET
 from flet import (
     ElevatedButton,
     FilePicker,
@@ -14,7 +16,7 @@ from flet import (
     Text,
     icons,
 )
-import xml.etree.ElementTree as ET
+
 
 
 # regex1 = "RDD([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
@@ -110,6 +112,29 @@ def update_json_with_xml_data(directory_path, json_path):
     with open(json_path, 'w') as json_file:
         json.dump(data, json_file, indent=2)
 
+def json_to_csv(json_file_path, csv_file_path):
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+
+    # Asegúrate de que la lista de registros en el JSON tenga al menos un elemento
+    if not data or not isinstance(data, list) or not data[0]:
+        print("El archivo JSON no contiene datos válidos.")
+        return
+
+    # Extrae los nombres de las columnas del primer registro
+    header = list(data[0].keys())
+
+    # Abre el archivo CSV para escribir
+    with open(csv_file_path, 'w', newline='') as csv_file:
+        csv_writer = csv.writer(csv_file)
+
+        # Escribe la cabecera
+        csv_writer.writerow(header)
+
+        # Escribe los datos
+        for row in data:
+            csv_writer.writerow(row.values())
+
 def process_all_xml_files(directory_path):
     registros = []
 
@@ -140,6 +165,7 @@ def process_all_xml_files(directory_path):
 
     print(f"Se han procesado los archivos XML en {directory_path}.")
     print(f"Se han guardado los registros en {json_path}.")
+    
 
 
 def extract_xml_data(xml_file_path):
