@@ -165,6 +165,12 @@ def process_all_xml_files(directory_path):
 
     print(f"Se han procesado los archivos XML en {directory_path}.")
     print(f"Se han guardado los registros en {json_path}.")
+
+    # Convierte el archivo JSON a CSV
+    csv_path = os.path.join(directory_path, 'registros.csv')
+    json_to_csv(json_path, csv_path)
+
+    print(f"Se ha convertido el archivo JSON a CSV en {csv_path}.")
     
 
 
