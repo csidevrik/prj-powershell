@@ -1,81 +1,54 @@
-import flet
-from flet import (
-    ElevatedButton,
-    FilePicker,
-    FilePickerResultEvent,
-    Page,
-    Row,
-    Text,
-    icons,
-)
+import flet as ft
 
+name = "Draggable VerticalDivider"
 
-def main(page: Page):
-    # Pick files dialog
-    def pick_files_result(e: FilePickerResultEvent):
-        selected_files.value = (
-            ", ".join(map(lambda f: f.name, e.files)) if e.files else "Cancelled!"
-        )
-        selected_files.update()
+async def main(page: ft.Page):
+    page.window_width = 1920
+    page.window_height = 1080
+    page.title = "facturet"
+    page.bgcolor = "#263238"
 
-    pick_files_dialog = FilePicker(on_result=pick_files_result)
-    selected_files = Text()
+    async def move_vertical_divider(e: ft.DragUpdateEvent):
+        if (e.delta_x > 0 and c.width < 800) or (e.delta_x < 0 and c.width > 400):
+            c.width += e.delta_x
+        await c.update_async()
 
-    # Save file dialog
-    def save_file_result(e: FilePickerResultEvent):
-        save_file_path.value = e.path if e.path else "Cancelled!"
-        save_file_path.update()
+    async def show_draggable_cursor(e: ft.HoverEvent):
+        e.control.mouse_cursor = ft.MouseCursor.RESIZE_LEFT_RIGHT
+        await e.control.update_async()
 
-    save_file_dialog = FilePicker(on_result=save_file_result)
-    save_file_path = Text()
+    c = ft.Container(
+        bgcolor=ft.colors.ORANGE_300,
+        alignment=ft.alignment.center,
+        width=300,
+        # expand=1,
+    )
 
-    # Open directory dialog
-    def get_directory_result(e: FilePickerResultEvent):
-        directory_path.value = e.path if e.path else "Cancelled!"
-        directory_path.update()
-
-    get_directory_dialog = FilePicker(on_result=get_directory_result)
-    directory_path = Text()
-
-    # hide all dialogs in overlay
-    page.overlay.extend([pick_files_dialog, save_file_dialog, get_directory_dialog])
-
-    page.add(
-        Row(
-            [
-                ElevatedButton(
-                    "Pick files",
-                    icon=icons.UPLOAD_FILE,
-                    on_click=lambda _: pick_files_dialog.pick_files(
-                        allow_multiple=True
-                    ),
-                ),
-                selected_files,
-            ]
-        ),
-        Row(
-            [
-                ElevatedButton(
-                    "Save file",
-                    icon=icons.SAVE,
-                    on_click=lambda _: save_file_dialog.save_file(),
-                    disabled=page.web,
-                ),
-                save_file_path,
-            ]
-        ),
-        Row(
-            [
-                ElevatedButton(
-                    "Open directory",
-                    icon=icons.FOLDER_OPEN,
-                    on_click=lambda _: get_directory_dialog.get_directory_path(),
-                    disabled=page.web,
-                ),
-                directory_path,
-            ]
-        ),
+    fila= ft.Row(
+        controls=[
+            c,
+            ft.GestureDetector(
+                content=ft.VerticalDivider(),
+                drag_interval=10,
+                on_pan_update=move_vertical_divider,
+                on_hover=show_draggable_cursor,
+            ),
+            ft.Container(
+                bgcolor= "#263238",
+                alignment=ft.alignment.center,
+                expand=1,
+            ),
+        ],
+        spacing=0,
+        width=1920,
+        height=1080,
     )
 
 
-flet.app(target=main)
+
+
+    await page.add_async(fila)
+    pass
+
+
+ft.app(target=main)
