@@ -1,3 +1,4 @@
+import platform
 import csv
 import json
 import hashlib
@@ -341,10 +342,23 @@ def open_pdf_with_browser(folder_path, browser_command):
         # print(contador)
 
 def open_pdf_with_firefox(folder_path):
-    open_pdf_with_browser(folder_path, "start firefox")
+    browser_command = get_browser_command("firefox")
+    open_pdf_with_browser(folder_path, browser_command)
 
 def open_pdf_with_chrome(folder_path):
-    open_pdf_with_browser(folder_path, "start chrome")  
+    browser_command = get_browser_command("chrome")
+    open_pdf_with_browser(folder_path, browser_command)
+
+def get_browser_command(browser):
+    if platform.system() == "Linux":
+        if browser == "chrome":
+            return "google-chrome"
+        elif browser == "firefox":
+            return "firefox"
+    elif platform.system() == "Windows":
+        return f"start {browser}"
+    else:
+        raise OSError("Sistema operativo no compatible")
 
 
 if __name__ == "__main__":
