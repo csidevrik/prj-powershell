@@ -1,39 +1,6 @@
 import flet as ft
 import os
 
-# if  __name__ == "__main__":
-#     async def check_item_clicked(e):
-#         e.control.checked = not e.control.checked
-#         page.update()
-    
-#     async def main(page: ft.Page):
-#         page.appbar = ft.AppBar(
-#             leading=ft.Icon(ft.icons.PALETTE),
-#             leading_width=40,
-#             title=ft.Text("facret space"),
-#             center_title=False,
-#             bgcolor=ft.colors.SURFACE_TINT,
-#             actions=[
-#                 ft.IconButton(ft.icons.WB_SUNNY_OUTLINED),
-#                 ft.IconButton(ft.icons.FILTER_3),
-#                 ft.PopupMenuButton(
-#                     items=[
-#                         ft.PopupMenuItem(text="File"),
-#                         ft.PopupMenuItem(),
-#                         ft.PopupMenuItem(
-#                             text="Exit", checked=False, on_click=check_item_clicked
-#                         ),
-#                     ]
-#                 ),
-#             ],
-#             )
-#         # page.add()
-
-#         contenedor = ft.Container(width=1920, height=1080 ,bgcolor='#78a083', alignment=ft.alignment.top_center)
-#         await page.add_async(contenedor)
-#         pass
-#     ft.app(target=main)
-
 def open_pdf_with_browser(folder_path, browser_command):
     files = os.listdir(folder_path)
     filesPDF = [file for file in files if file.endswith(".pdf")]
@@ -52,7 +19,7 @@ def open_pdf_with_firefox(folder_path):
 def open_pdf_with_chrome(folder_path):
     open_pdf_with_browser(folder_path, "start chrome") 
 
-def main(page: ft.Page):
+async def main(page: ft.Page):
     # page.drawer = ft.NavigationDrawer(
     #     controls=[
     #         # ft.Container(height=12),
@@ -94,12 +61,38 @@ def main(page: ft.Page):
     # page.add(ft.ElevatedButton("Show drawer", on_click=show_drawer))
     page.title = "Facturas y Retenciones"
     page.padding = 0
-    
-    page.window_frameless = False
+    # page.window_title_bar_hidden = True
+    page.window_resizable = True
+    # page.window_frameless = False
     page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
     page.window_height = 500
     page.window_width = 1000
     page.window_max_width = 1200
     page.window_max_height = 600
+    
 
+    leftC = ft.Container(
+        width=300,height=400,
+        content=ft.ElevatedButton("Elevated Button in Container"),
+        bgcolor=ft.colors.YELLOW,
+        padding=5,
+        border=ft.border.all(),
+    )
+    rightC = ft.Container(
+        width=300,height=400,border=ft.border.all(),
+    )
+    
+    row = ft.Row(spacing=0, controls=[
+        leftC,
+        rightC
+    ])
+    container = ft.Container(
+        width=1000,
+        height=600,
+        alignment=ft.alignment.center,
+        bgcolor="#1f1f1f",
+    )
+
+    await page.add_async(container)
+    await page.update_async()
 ft.app(target=main)
