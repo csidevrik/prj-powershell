@@ -356,6 +356,7 @@ if __name__ == "__main__":
         page.description = "APP for try facturas"
         # page.window_bgcolor = ft.colors.TRANSPARENT
         page.window_frameless = False
+        # page.window_title_bar_hidden = True
         page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
         page.window_height = 500
         page.window_width = 1000
