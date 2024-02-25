@@ -30,6 +30,12 @@ class Registro:
         self.number_fac = number_fac
         self.value_serv = value_serv
 
+class RegistroRet:
+    def __init__(self, ret_number, ret_value, fac_number):
+        self.ret_number = ret_number
+        self.ret_value = ret_value
+        self.fac_number = fac_number
+
 def extract_code_from_filename(folderPath):
     # Utilizamos una expresión regular para buscar un patrón específico (cualquier secuencia de letras mayúsculas y números) en el nombre del archivo.
     match = re.search(r"I[0-9]+", folderPath)
@@ -172,7 +178,42 @@ def process_all_xml_files(directory_path):
 
     print(f"Se ha convertido el archivo JSON a CSV en {csv_path}.")
     
+def process_all_xml_rets(directory_path):
+    registros = []
 
+    # Asegúrate de que el directorio exista
+    if not os.path.exists(directory_path):
+        print(f"El directorio {directory_path} no existe.")
+        return
+
+    # Recorre todos los archivos en el directorio
+    for filename in os.listdir(directory_path):
+        if filename.endswith(".xml"):
+            xml_file_path = os.path.join(directory_path, filename)
+
+            # Extrae los datos del archivo XML
+            registro = get_register_xml_retencion(xml_file_path)
+
+            # Agrega el registro a la lista
+            registros.append({
+                'ret_number': registro.ret_number,
+                'ret_value': registro.ret_value,
+                'fac_number': registro.fac_number
+            })
+
+    # Guarda la lista de registros en un archivo JSON
+    json_path = os.path.join(directory_path, 'retenciones.json')
+    with open(json_path, 'w') as json_file:
+        json.dump(registros, json_file, indent=4)
+
+    print(f"Se han procesado los archivos XML en {directory_path}.")
+    print(f"Se han guardado los registros en {json_path}.")
+
+    # Convierte el archivo JSON a CSV
+    csv_path = os.path.join(directory_path, 'retenciones.csv')
+    json_to_csv(json_path, csv_path)
+
+    print(f"Se ha convertido el archivo JSON a CSV en {csv_path}.")
 
 def extract_xml_data(xml_file_path):
     with open(xml_file_path, 'r', encoding='utf-8') as file:
@@ -208,6 +249,30 @@ def extract_xml_data(xml_file_path):
     print(valor_servicio)
 
     return Registro(code_inst=codigo, number_fac=numero_factura, value_serv=valor_servicio)
+
+def get_register_xml_retencion(xml_file_path):
+    with open(xml_file_path, 'r', encoding='utf-8') as file:
+        xml_content = file.read()
+
+    root = ET.fromstring(xml_content)
+    # Obtén los elementos deseados usando XPath
+    estab = root.find(".//estab").text
+    pto_em = root.find(".//ptoEmi").text
+    secue = root.find(".//secuencial").text
+    
+    retencion_numbe = f"{estab}-{pto_em}-{secue}"
+    retencion_value = root.find(".//valorImpuesto").text
+    factura_num  = root.find(".//numDocSustento").text
+    factura_number =  "FAC"+factura_num
+
+    # Retornar un objeto Registro con los datos relevantes
+    print(retencion_numbe)
+    print(retencion_value)
+    print(factura_number)
+    print("///////////////////////////////////////////////")
+
+    return RegistroRet(ret_number=retencion_numbe, ret_value=retencion_value, fac_number=factura_number)
+
 
 def rename_files_with_attributes(folder_path):
     # Ruta de la carpeta "corregir"
@@ -258,7 +323,7 @@ def extract_xml_content(file_path):
     codigo = root.find('.//campoAdicional[@nombre="Instalacion"]').text
 
     # Crea el nuevo nombre
-    new_name = f"FAC{estab}{pto_em}{secue}-{codigo}"
+    new_name = f"{estab}{pto_em}{secue}-{codigo}"
 
     print(new_name)
     return new_name
@@ -329,7 +394,10 @@ if __name__ == "__main__":
                     icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files for json", on_click=lambda e: process_all_xml_files(directory_path.value)
+                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files facturas for json", on_click=lambda e: process_all_xml_files(directory_path.value)
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files retenciones for json", on_click=lambda e: process_all_xml_rets(directory_path.value)
                     ),
             ]
         )
