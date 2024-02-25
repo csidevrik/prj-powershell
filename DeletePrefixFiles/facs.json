@@ -1,0 +1,273 @@
+{
+    "facs": {
+        "registro":
+        [
+            { 
+              "NUM": 1,
+              "G": "G1",
+              "AGENCY": "ARENAL",
+              "BANDWIDTH": "5MBPS",
+              "DAY SERV": "DAYS SERV",
+              "NUMBERFAC": "FAC001003044264308",
+              "CODE INST": "I0247954",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 2,
+              "G": "G1",
+              "AGENCY": "9DEOCTUBRE",
+              "BANDWIDTH": "5MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264309",
+              "CODE INST": "I0247955",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 3,
+              "G": "G1",
+              "AGENCY": "SJOAQUIN",
+              "BANDWIDTH": "5 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264310",
+              "CODE INST": "I0247956",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 4,
+              "G": "G1",
+              "AGENCY": "CDIT",
+              "BANDWIDTH": "5 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264312",
+              "CODE INST": "I0247958",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 5,
+              "G": "G1",
+              "AGENCY": "10DEAGOSTO",
+              "BANDWIDTH": "5 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264314",
+              "CODE INST": "I0247960",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 6,
+              "G": "G1",
+              "AGENCY": "12DEABRIL",
+              "BANDWIDTH": "5 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264315",
+              "CODE INST": "I0247961",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 7,
+              "G": "G1",
+              "AGENCY": "CAPULISPAMBA",
+              "BANDWIDTH": "10MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264316",
+              "CODE INST": "I0247963",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 96.1
+            },
+            {
+              "NUM": 8,
+              "G": "G1",
+              "AGENCY": "MAYANCELA",
+              "BANDWIDTH": "10MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264317",
+              "CODE INST": "I0247964",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 96.1
+            },
+            {
+              "NUM": 9,
+              "G": "G1",
+              "AGENCY": "TTERRESTRE",
+              "BANDWIDTH": "10MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264318",
+              "CODE INST": "I0247965",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 96.1
+            },
+            {
+              "NUM": 10,
+              "G": "G1",
+              "AGENCY": "PQM",
+              "BANDWIDTH": "10MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264321",
+              "CODE INST": "I0247968",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 96.1
+            },
+            {
+              "NUM": 11,
+              "G": "G1",
+              "AGENCY": "CALAIRE1-TALCALDIA",
+              "BANDWIDTH": "5MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264322",
+              "CODE INST": "I0247969",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 12,
+              "G": "G1",
+              "AGENCY": "U.FLAGRANCIA",
+              "BANDWIDTH": "5 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264323",
+              "CODE INST": "I0247970",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 13,
+              "G": "G1",
+              "AGENCY": "CALAIRE3-IESCANDON",
+              "BANDWIDTH": "5 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264324",
+              "CODE INST": "I0247971",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 64.75
+            },
+            {
+              "NUM": 14,
+              "G": "G2",
+              "AGENCY": "EMOV EDIFICIO PRINCIPAL",
+              "BANDWIDTH": "60 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044239204",
+              "CODE INST": "I0205929",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 205.2
+            },
+            {
+              "NUM": 15,
+              "G": "G2",
+              "AGENCY": "EMOV EP - DATA CENTER ETAPA",
+              "BANDWIDTH": "20 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044259894",
+              "CODE INST": "I0242176",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 99.73
+            },
+            {
+              "NUM": 16,
+              "G": "G2",
+              "AGENCY": "ENLACE PARA CONTINGENCIA",
+              "BANDWIDTH": "2 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044264478",
+              "CODE INST": "I0248142",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 52.44
+            },
+            {
+              "NUM": 17,
+              "G": "G2",
+              "AGENCY": "PSEUDOWIRE CONTINGENCIA",
+              "BANDWIDTH": "40 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044191981",
+              "CODE INST": "RDD02235",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 1872
+            },
+            {
+              "NUM": 18,
+              "G": "G3",
+              "AGENCY": "CONSEJO SEGURIDAD CIUDADANA",
+              "BANDWIDTH": "20 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044191793",
+              "CODE INST": "RDD01972",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 337.6
+            },
+            {
+              "NUM": 19,
+              "G": "G3",
+              "AGENCY": "CALAIRE2-JMONTALVO",
+              "BANDWIDTH": "2 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044191794",
+              "CODE INST": "RDD01973",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 45
+            },
+            {
+              "NUM": 20,
+              "G": "G3",
+              "AGENCY": "03DENOVIEMBRE",
+              "BANDWIDTH": "2 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044191795",
+              "CODE INST": "RDD01974",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 45
+            },
+            {
+              "NUM": 21,
+              "G": "G3",
+              "AGENCY": "24DEMAYO",
+              "BANDWIDTH": "2 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044191792",
+              "CODE INST": "RDD01966",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 45
+            },
+            {
+              "NUM": 22,
+              "G": "G3",
+              "AGENCY": "EDEC",
+              "BANDWIDTH": "2 MBPS",
+              "DAY SERV": "30",
+              "NUMBERFAC": "FAC001003044191998",
+              "CODE INST": "RDD02296",
+              "PARTIDA": "'A100.001.01.00.530105.000.2",
+              "C.COSTO": "017 GOT MATRICULACION",
+              "VALUE SERV": 45
+            }
+        ]
+    }
+}
+
+
