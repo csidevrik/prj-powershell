@@ -361,9 +361,6 @@ if __name__ == "__main__":
 
         page.add(
             Row(
-                
-            ),
-            Row(
                 [
                     ElevatedButton(
                         "Open directory",

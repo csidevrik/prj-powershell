@@ -43,10 +43,7 @@ async def main(page: ft.Page):
         width=1920,
         height=1080,
     )
-
-
-
-
+    
     await page.add_async(fila)
     pass
 
