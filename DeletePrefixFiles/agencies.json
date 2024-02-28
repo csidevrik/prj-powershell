@@ -6,21 +6,21 @@
           "ID": 1,
           "GROUP": "G1",
           "AGENCY":"ARENAL",
-          "BANDWI":"5MBPS",
+          "BANDWI":"5 MBPS",
           "COD_IN":"I0247954",
           "PARTID":"A100.001.01.00.530105.000.2",
-          "C.COSTO":"008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST":"008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 2,
           "GROUP": "G1",
           "AGENCY": "09OCTUBRE",
-          "BANDWI": "5MBPS",
+          "BANDWI": "5 MBPS",
           "COD_IN": "I0247955",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 3,
@@ -29,8 +29,8 @@
           "BANDWI": "5 MBPS",
           "COD_IN": "I0247956",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 4,
@@ -39,8 +39,8 @@
           "BANDWI": "5 MBPS",
           "COD_IN": "I0247958",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 5,
@@ -49,8 +49,8 @@
           "BANDWI": "5 MBPS",
           "COD_IN": "I0247960",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 6,
@@ -59,58 +59,58 @@
           "BANDWI": "5 MBPS",
           "COD_IN": "I0247961",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 7,
           "GROUP": "G1",
           "AGENCY": "CAPULISPAMBA",
-          "BANDWI": "10MBPS",
+          "BANDWI": "10 MBPS",
           "COD_IN": "I0247963",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 96.1
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 96.1
         },
         {
           "ID": 8,
           "GROUP": "G1",
           "AGENCY": "MAYANCELA",
-          "BANDWI": "10MBPS",
+          "BANDWI": "10 MBPS",
           "COD_IN": "I0247964",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 96.1
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 96.1
         },
         {
           "ID": 9,
           "GROUP": "G1",
           "AGENCY": "TTERRESTRE",
-          "BANDWI": "10MBPS",
+          "BANDWI": "10 MBPS",
           "COD_IN": "I0247965",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 96.1
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 96.1
         },
         {
           "ID": 10,
           "GROUP": "G1",
           "AGENCY": "PARQUEMADRE",
-          "BANDWI": "10MBPS",
+          "BANDWI": "10 MBPS",
           "COD_IN": "I0247968",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 96.1
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 96.1
         },
         {
           "ID": 11,
           "GROUP": "G1",
           "AGENCY": "CALAIRE1-TALCALDIA",
-          "BANDWI": "5MBPS",
+          "BANDWI": "5 MBPS",
           "COD_IN": "I0247969",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 12,
@@ -119,8 +119,8 @@
           "BANDWI": "5 MBPS",
           "COD_IN": "I0247970",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 13,
@@ -129,8 +129,8 @@
           "BANDWI": "5 MBPS",
           "COD_IN": "I0247971",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 64.75
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 64.75
         },
         {
           "ID": 14,
@@ -139,8 +139,8 @@
           "BANDWI": "60 MBPS",
           "COD_IN": "I0205929",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 205.2
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 205.2
         },
         {
           "ID": 15,
@@ -149,8 +149,8 @@
           "BANDWI": "20 MBPS",
           "COD_IN": "I0242176",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 99.73
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 99.73
         },
         {
           "ID": 16,
@@ -159,8 +159,8 @@
           "BANDWI": "2 MBPS",
           "COD_IN": "I0248142",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 52.44
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 52.44
         },
         {
           "ID": 17,
@@ -169,8 +169,8 @@
           "BANDWI": "40 MBPS",
           "COD_IN": "RDD02235",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 1872
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 1872
         },
         {
           "ID": 18,
@@ -179,8 +179,8 @@
           "BANDWI": "20 MBPS",
           "COD_IN": "RDD01972",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 337.6
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 337.6
         },
         {
           "ID": 19,
@@ -189,8 +189,8 @@
           "BANDWI": "2 MBPS",
           "COD_IN": "RDD01973",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 45
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 45
         },
         {
           "ID": 20,
@@ -199,8 +199,8 @@
           "BANDWI": "2 MBPS",
           "COD_IN": "RDD01974",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 45
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 45
         },
         {
           "ID": 21,
@@ -209,8 +209,8 @@
           "BANDWI": "2 MBPS",
           "COD_IN": "RDD01966",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 45
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 45
         },
         {
           "ID": 22,
@@ -219,8 +219,8 @@
           "BANDWI": "2 MBPS",
           "COD_IN": "RDD02296",
           "PARTID": "A100.001.01.00.530105.000.2",
-          "C.COSTO": "008 SUBGERENCIA TIC'S",
-          "VAL_SERV": 45
+          "C.COST": "008 SUBGERENCIA TIC'S",
+          "VAL_SER": 45
         }
     ]
 }
