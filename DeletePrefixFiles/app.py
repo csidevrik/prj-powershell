@@ -339,8 +339,7 @@ def open_pdf_with_browser(folder_path, browser_command):
         pathComplete = os.path.abspath(os.path.join(folder_path, filePDF))
         # print(pathComplete)
         subprocess.run(f"{browser_command} --new-tab {pathComplete}", shell=True)
-        # print(contador)
-
+        
 def open_pdf_with_firefox(folder_path):
     browser_command = get_browser_command("firefox")
     open_pdf_with_browser(folder_path, browser_command)

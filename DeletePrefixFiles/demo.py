@@ -24,22 +24,28 @@ async def main(page: ft.Page):
         border=ft.InputBorder.OUTLINE,
         filled=True,
         bgcolor="#f6f8fa",
-        helper_text="Ingresa aqui la herramienta que deseas usar",
+        # helper_text="Ingresa aqui la herramienta que deseas usar",
         # helper_style=ft.ShadowBlurStyle.SOLID,
     )
 
+    colu=ft.Column(
+        controls=[inputSearch],
+        animate_offset=ft.Animation.curve,
 
-    cleft = ft.Container(inputSearch,
-        bgcolor="#026ec1",
+    )
+    cleft = ft.Container(
+        colu, 
+        bgcolor="#ff9e47",
         alignment=ft.alignment.center,
         width=300,
         # expand=1,
     )
     cright = ft.Container(
-        bgcolor= "#263238",
+        bgcolor= "#ffffff",
         alignment=ft.alignment.center,
         expand=1,
     )
+
 
     fila= ft.Row(
         spacing=0,
