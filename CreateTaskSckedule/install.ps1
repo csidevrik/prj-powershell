@@ -6,7 +6,7 @@
 
 # VARIABLES
 # --------------------------------------
-$TaskName="TestTask" # Name of the scheduled task.
+$TaskName="OctabaRobocopy" # Name of the scheduled task.
 
 
 # - 1. Create schedule.service object
@@ -33,13 +33,13 @@ $taskDefinition = $scheduleObject.NewTask(0)
 Write-Host "pivote"
 
 # ]]]]]]]]]]]]]]]]]]]]]
-hay un problema todavia 
+# hay un problema todavia 
 
 
 # - 5. Create an action for the task
 $action = $taskDefinition.Actions.Create(0)
 $action.Path = "robocopy.exe"
-$action.Arguments = "$origen $destino $opcionesRobocopy"
+$action.Arguments = "$origen $destino $optionsRobocopy"
 
 # - 6. Register the task within the folder
 $rootFolder.RegisterTaskDefinition($TaskName, $taskDefinition, 6, $null, $null, 1)
