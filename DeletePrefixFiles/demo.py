@@ -19,7 +19,7 @@ async def main(page: ft.Page):
     # /////////////////////////////////////////////////////////////
     
     inputSearch = ft.TextField(
-        hint_text="SEARCH", 
+        # hint_text="SEARCH", 
         text_align=ft.TextAlign.CENTER,
         border=ft.InputBorder.OUTLINE,
         filled=True,
