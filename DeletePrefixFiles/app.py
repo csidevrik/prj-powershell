@@ -351,7 +351,7 @@ def open_pdf_with_chrome(folder_path):
 def get_browser_command(browser):
     if platform.system() == "Linux":
         if browser == "chrome":
-            return "google-chrome"
+            return "google-chrome"  
         elif browser == "firefox":
             return "firefox"
     elif platform.system() == "Windows":
