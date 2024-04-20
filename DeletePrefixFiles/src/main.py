@@ -1,20 +1,27 @@
 import flet as ft
 
+# VARIABLES
+LIMIT_VD1_MAX=200
+LIMIT_VD1_MIN=100
+
+LIMIT_VD2_MAX=200
+LIMIT_VD2_MIN=100
+
 
 async def main(page: ft.Page):
     page.window_height = 1080
     page.window_width = 1920
     page.window_resizable = True
-    page.title = "AAA"
+    page.title = "PAYMENTS"
     page.padding = 0
 
     async def move_vertical_divider1(e: ft.DragUpdateEvent):
-        if (e.delta_x > 0 and left01.width < 800) or (e.delta_x < 0 and left01.width > 100):
+        if (e.delta_x > 0 and left01.width < LIMIT_VD1_MAX) or (e.delta_x < 0 and left01.width > LIMIT_VD1_MIN):
             left01.width += e.delta_x
         await left01.update_async()
 
     async def move_vertical_divider2(e: ft.DragUpdateEvent):
-        if (e.delta_x > 0 and left02.width < 600) or (e.delta_x < 0 and left02.width > 200):
+        if (e.delta_x > 0 and left02.width < LIMIT_VD2_MAX) or (e.delta_x < 0 and left02.width > LIMIT_VD2_MIN):
             left02.width += e.delta_x
         await left02.update_async()
 
@@ -23,17 +30,17 @@ async def main(page: ft.Page):
         await e.control.update_async()
 
     left01 = ft.Container(
-        bgcolor="#f5f5f5",
-        alignment=ft.alignment.center_left,
+        bgcolor="#f9f1ef",
+        alignment=ft.alignment.center,
         width=100,
     )
     left02 = ft.Container(
-        bgcolor= "#263238",
+        bgcolor= "#f9f1ef",
         alignment=ft.alignment.center,
-        width=200,
+        width=100,
     )
     right01 = ft.Container(
-         bgcolor= "#263238",
+        bgcolor= "#f9f1ef",
         alignment=ft.alignment.center,
         expand=1,
     )
@@ -52,16 +59,21 @@ async def main(page: ft.Page):
         on_hover=show_draggable_cursor,
     )
 
-    row = ft.Row(spacing=0, controls=[
+    row = ft.Row(spacing=10, controls=[
         left01,
         gestureDetector1,
         left02,
         gestureDetector2,
         right01,
     ])
-    contenedor = ft.Container(row,width=1920, height=1080 ,bgcolor='#78a083', alignment=ft.alignment.top_center)
+    container = ft.Container(row,
+                              width=1920, 
+                              height=1080 ,
+                              bgcolor='#f9f1ef', 
+                              alignment=ft.alignment.bottom_center)
     
-    await page.add_async(contenedor)
+    await page.add_async(container)
     pass
 # ft.app(port=3000,target=main, view=ft.AppView.WEB_BROWSER)
-ft.app(target=main)
+ft.app(target=main, assets_dir="assets") 
+    #    view=ft.WEB_BROWSER)
