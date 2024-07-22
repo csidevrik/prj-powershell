@@ -262,7 +262,7 @@ def get_register_xml_retencion(xml_file_path):
     secue = root.find(".//secuencial").text
     
     retencion_numbe = f"{estab}-{pto_em}-{secue}"
-    retencion_value = root.find(".//valorImpuesto").text
+    retencion_value = root.find(".//valorRetenido").text
     factura_num  = root.find(".//numDocSustento").text
     factura_number =  "FAC"+factura_num
 
