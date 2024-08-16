@@ -46,7 +46,64 @@ def extract_code_from_filename(folderPath):
     else:
         # Si no se encuentra un patrón, devolvemos None.
         return None
+    
+def delete_CDATA(folder_path):
+    files = os.listdir(folder_path)
+    # Define la carpeta que deseas leer
+    for archivo in files:
+        # Verifica si el archivo es un archivo .xml
+        if archivo.endswith('.xml'):
+            # Abre el archivo en modo lectura y escritura
+            with open(os.path.join(folder_path, archivo), 'r+') as f:
+                # Lee el contenido del archivo
+                contenido = f.read()
+                # Reemplaza todas las repeticiones de &lt; por <
+                contenido = contenido.replace('<![CDATA[<?xml version="1.0" encoding="UTF-8"?><comprobanteRetencion id="comprobante" version="1.0.0">', '')
+                contenido = contenido.replace('</comprobanteRetencion>]]>','')
+                # Coloca el cursor al inicio del archivo
+                f.seek(0)
+                # Escribe el contenido modificado en el archivo
+                f.write(contenido)
+                # Trunca el archivo para eliminar cualquier contenido adicional
+                f.truncate()
 
+def replace_menorque(folder_path):
+    files = os.listdir(folder_path)
+    # Define la carpeta que deseas leer
+    for archivo in files:
+        # Verifica si el archivo es un archivo .xml
+        if archivo.endswith('.xml'):
+            # Abre el archivo en modo lectura y escritura
+            with open(os.path.join(folder_path, archivo), 'r+') as f:
+                # Lee el contenido del archivo
+                contenido = f.read()
+                # Reemplaza todas las repeticiones de &lt; por <
+                contenido = contenido.replace('&lt;', '<')
+                # Coloca el cursor al inicio del archivo
+                f.seek(0)
+                # Escribe el contenido modificado en el archivo
+                f.write(contenido)
+                # Trunca el archivo para eliminar cualquier contenido adicional
+                f.truncate()
+    
+def replace_mayorque(folder_path):
+    files = os.listdir(folder_path)
+    # Define la carpeta que deseas leer
+    for archivo in files:
+        # Verifica si el archivo es un archivo .xml
+        if archivo.endswith('.xml'):
+            # Abre el archivo en modo lectura y escritura
+            with open(os.path.join(folder_path, archivo), 'r+') as f:
+                # Lee el contenido del archivo
+                contenido = f.read()
+                # Reemplaza todas las repeticiones de &lt; por <
+                contenido = contenido.replace('&gt;', '>')
+                # Coloca el cursor al inicio del archivo
+                f.seek(0)
+                # Escribe el contenido modificado en el archivo
+                f.write(contenido)
+                # Trunca el archivo para eliminar cualquier contenido adicional
+                f.truncate()
 
 def remove_duplicate_files(folder_path):
     files = os.listdir(folder_path)
@@ -412,6 +469,15 @@ if __name__ == "__main__":
                     ),
                 ft.PopupMenuItem(
                     icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files retenciones for json", on_click=lambda e: process_all_xml_rets(directory_path.value)
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.REPLAY,  text="Process all xml files retenciones menor que", on_click=lambda e: replace_menorque(directory_path.value)
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.REPLAY,  text="Process all xml files retenciones mayor que", on_click=lambda e: replace_mayorque(directory_path.value)
+                    ),
+                ft.PopupMenuItem(
+                    icon=ft.icons.REPLAY,  text="Process all xml files delete CDATA", on_click=lambda e: delete_CDATA(directory_path.value)
                     ),
             ]
         )
