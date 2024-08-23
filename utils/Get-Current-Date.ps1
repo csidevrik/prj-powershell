@@ -32,12 +32,11 @@ function Get-Current-Date {
 
     switch ($PsCmdlet.ParameterSetName) {
         "JustDate" {
-            # Formato para sólo la fecha
-            $resultado = "{0:D2}{1}_{2:D2}{3:D4}" -f `
-                $actualDate.Day, `
+            $resultado = "{0:D4}{1:D2}{2}-{3:D2}_" -f `
+                $actualDate.Year, `
+                $actualDate.Month, `
                 $months[$actualDate.Month], `
-                $actualDate.Day, `
-                $actualDate.Year
+                $actualDate.Day    
         }
         "JustHour" {
             # Formato para sólo la hora
@@ -48,8 +47,9 @@ function Get-Current-Date {
         }
         "DayAndHour" {
             # Formato para el mes y día, seguido de la hora
-            $resultado = "{0}{1:D2}_{2:D2}h{3:D2}m{4:D2}s" -f `
-                $months[$actualDate.Month], `
+            $resultado = "{0}{1:D2}{2:D2}-{3:D2}h{4:D2}m{5:D2}s" -f `
+                $actualDate.Year, `
+                $actualDate.Month, `
                 $actualDate.Day, `
                 $actualDate.Hour, `
                 $actualDate.Minute, `
@@ -57,11 +57,10 @@ function Get-Current-Date {
         }
         "FullDate" {
             # Formato completo de fecha y hora
-            $resultado = "{0:D2}{1}_{2:D2}{3:D4}_{4:D2}{5:D2}{6:D2}" -f `
-                $actualDate.Day, `
-                $months[$actualDate.Month], `
-                $actualDate.Day, `
+            $resultado = "{0:D4}{1:D2}{2:D2}{3:D2}{4:D2}{5:D2}" -f `
                 $actualDate.Year, `
+                $actualDate.Month, `
+                $actualDate.Day, `
                 $actualDate.Hour, `
                 $actualDate.Minute, `
                 $actualDate.Second
@@ -72,15 +71,15 @@ function Get-Current-Date {
     Write-Output $resultado
 }
 
-# # Ejemplos de uso:
-# # Para obtener solo la fecha:
-# Get-Current-Date -JustDate
+# Ejemplos de uso:
+# Para obtener solo la fecha:
+Get-Current-Date -JustDate
 
-# # Para obtener solo la hora:
-# Get-Current-Date -JustHour
+# Para obtener solo la hora:
+Get-Current-Date -JustHour
 
-# # Para obtener la fecha y hora (con mes y día):
-# Get-Current-Date -DayAndHour
+# Para obtener la fecha y hora (con mes y día):
+Get-Current-Date -DayAndHour
 
-# # Para obtener la fecha completa (default):
-# Get-Current-Date
+# Para obtener la fecha completa (default):
+Get-Current-Date
