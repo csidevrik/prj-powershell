@@ -12,6 +12,7 @@ a = Analysis(
     runtime_hooks=[],
     excludes=[],
     noarchive=False,
+    optimize=0,
 )
 pyz = PYZ(a.pure)
 
@@ -34,5 +35,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    version='C:\\Users\\csigua\\AppData\\Local\\Temp\\cd2c664e-6731-4146-8ef1-bfc53c14d356',
+    version='C:\\Users\\adminos\\AppData\\Local\\Temp\\29ed4424-f7f9-43fd-a65e-2baf45fab760',
+    icon=['favicon.png'],
 )
