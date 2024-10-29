@@ -420,7 +420,6 @@ def get_browser_command(browser):
 if __name__ == "__main__":
     # Flet application for desktop GUI definition
     def main(page: ft.Page):
-        #Pick files dialog
         page.title = "Octaba facturas"
         page.padding = 0
         page.description = "APP for try facturas"
@@ -517,19 +516,6 @@ if __name__ == "__main__":
                         disabled=page.web,
                     ), 
                     directory_path,
-                ]
-            ),
-            Row(
-                [   
-                    ElevatedButton(
-                        "Pick files",
-                        icon=icons.UPLOAD_FILE,
-                        on_click=lambda _: pick_files_dialog.pick_files(
-                            allow_multiple=True
-                        ), 
-                        disabled=page.web,
-                    ),
-                    selected_files,
                 ]
             ),
         )
