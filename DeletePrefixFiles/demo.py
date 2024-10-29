@@ -3,8 +3,8 @@ import flet as ft
 name = "Draggable VerticalDivider"
 
 async def main(page: ft.Page):
-    page.window_width = 960
-    page.window_height = 540
+    page.window.width = 960
+    page.window.heigh = 540
     page.title = "facturet"
     page.bgcolor = "#263238"
 

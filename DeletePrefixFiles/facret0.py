@@ -63,12 +63,12 @@ async def main(page: ft.Page):
     page.padding = 0
     # page.window_title_bar_hidden = True
     page.window_resizable = True
-    # page.window_frameless = False
+    # page.window.frameless = False
     page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
-    page.window_height = 500
-    page.window_width = 1000
-    page.window_max_width = 1200
-    page.window_max_height = 600
+    page.window.heigh = 500
+    page.window.width = 1000
+    page.window.max_width = 1200
+   page.window.max_height = 600
     
 
     leftC = ft.Container(

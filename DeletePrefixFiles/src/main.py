@@ -9,8 +9,8 @@ LIMIT_VD2_MIN=100
 
 
 async def main(page: ft.Page):
-    page.window_height = 1080
-    page.window_width = 1920
+    page.window.heigh = 1080
+    page.window.width = 1920
     page.window_resizable = True
     page.title = "PAYMENTS"
     page.padding = 0
