@@ -431,7 +431,7 @@ if __name__ == "__main__":
         page.window.heigh = 500
         page.window.width = 1000
         page.window.max_width = 1200
-       page.window.max_height = 600
+        page.window.max_height = 600
 
         page.appbar = ft.AppBar(
             leading = ft.Icon(ft.icons.DOOR_SLIDING),
