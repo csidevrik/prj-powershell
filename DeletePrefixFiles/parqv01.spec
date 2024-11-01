@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['app.py'],
+    ['parqv01.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='app',
+    name='parqv01',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    version='C:\\Users\\adminos\\AppData\\Local\\Temp\\4561f83b-901e-48e7-b8d7-15426f149114',
+    version='C:\\Users\\adminos\\AppData\\Local\\Temp\\578e22a2-9c0e-4661-afbb-4aa269d77b92',
 )
