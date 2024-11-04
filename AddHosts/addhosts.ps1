@@ -9,8 +9,8 @@ $newContent = @"
 #
 127.0.0.1       localhost
 ::1             localhost
-127.0.0.3       www.facebook.com       # first local server
-127.0.0.4       chatgpt.com            # second local server
+# 127.0.0.3       www.facebook.com       first local server
+# 127.0.0.4       chatgpt.com            second local server
 "@
 
 # Escribir el nuevo contenido
