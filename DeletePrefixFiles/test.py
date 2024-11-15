@@ -34,13 +34,13 @@ region_textNretencion = page.get_text("text", clip=rectNretencion)
 print("Texto extraído:", region_textNretencion)
 
 # +++++++++++++++++++++++++++++++++
-# +               +               +
-# +               +               +
-# +               +               +
-# +++++++++++++++++  320*100      +
 # +                               +
 # +                               +
 # +                               +
+# +               +  320*100 ++++++
+# +               +               +
+# +               +               +
+# +               +               +
 # +++++++++++++++++++++++++++++++++ 685*120
 
 #    (x0,y0)
