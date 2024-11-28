@@ -144,25 +144,25 @@ class AppGUI:
         self._setup_controls(page)
         self._create_layout(page)
     
-    def _configure_page(self, page: ft.Page):
-        """Configure page properties."""
-        page.title = "Document Processor"
-        page.padding = 0
-        page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
-        page.window.height = 500
-        page.window.width = 1000
-        page.window.max_width = 1200
-        page.window.max_height = 600
+    # def _configure_page(self, page: ft.Page):
+    #     """Configure page properties."""
+    #     page.title = "Document Processor"
+    #     page.padding = 0
+    #     page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
+    #     page.window.height = 500
+    #     page.window.width = 1000
+    #     page.window.max_width = 1200
+    #     page.window.max_height = 600
         
-        page.appbar = ft.AppBar(
-            leading=ft.Icon(ft.icons.DOOR_SLIDING),
-            leading_width=100,
-            title=ft.Text("Document Processor"),
-            center_title=True,
-            bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
-        )
+    #     page.appbar = ft.AppBar(
+    #         leading=ft.Icon(ft.icons.DOOR_SLIDING),
+    #         leading_width=100,
+    #         title=ft.Text("Document Processor"),
+    #         center_title=True,
+    #         bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
+    #     )
         
-        page.update()
+    #     page.update()
 
     def _setup_controls(self, page: ft.Page):
         """Set up all control elements."""
