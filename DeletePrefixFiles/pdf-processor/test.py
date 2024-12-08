@@ -1,25 +1,3 @@
-""" import sys
-import pathlib
-import pymupdf  # Asegúrate de tener instalada la versión correcta de PyMuPDF
-
-# Obtener el nombre del archivo del argumento de la línea de comandos
-fname = sys.argv[1]
-
-# Asegurarse de que se trabaja con un archivo PDF
-if not fname.lower().endswith('.pdf'):
-    raise ValueError("El archivo debe ser un PDF.")
-
-# Abrir el documento y extraer el texto en formato Markdown
-with pymupdf.open(fname) as doc:
-    markdown_text = '\n\n'.join([f"### Página {i + 1}\n\n{page.get_text('text')}" for i, page in enumerate(doc)])
-
-# Guardar el texto como un archivo de Markdown
-output_path = pathlib.Path(fname).with_suffix('.md')
-output_path.write_text(markdown_text, encoding='utf-8')
-
-print(f"Archivo Markdown generado: {output_path}")
- """
-
 import pymupdf
 
 # Cargar el archivo PDF
