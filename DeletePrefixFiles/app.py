@@ -15,7 +15,7 @@ from flet import (
     Page,
     Row,
     Text,
-    icons,
+    Icons,
 )
 
 
@@ -423,21 +423,21 @@ if __name__ == "__main__":
         page.title = "Octaba facturas"
         page.padding = 0
         page.description = "APP for try facturas"
-        # page.window_bgcolor = ft.colors.TRANSPARENT
+        # page.window_bgcolor = ft.Colors.TRANSPARENT
         page.window.frameless = False
         # page.window_title_bar_hidden = True
-        page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
+        page.bgcolor = ft.Colors.with_opacity(0.90, '#07D2A9')
         page.window.heigh = 500
         page.window.width = 1000
         page.window.max_width = 1200
         page.window.max_height = 600
 
         page.appbar = ft.AppBar(
-            leading = ft.Icon(ft.icons.DOOR_SLIDING),
+            leading = ft.Icon(ft.Icons.DOOR_SLIDING),
             leading_width=100,
             title=ft.Text("App facturas"),
             center_title=True,
-            bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
+            bgcolor=ft.Colors.with_opacity(0.90, '#07D2A9')
         )
 
         page.update()
@@ -449,34 +449,34 @@ if __name__ == "__main__":
         pb = ft.PopupMenuButton(
             items=[
                 ft.PopupMenuItem(
-                    icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)
+                    icon=ft.Icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)
+                    icon=ft.Icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)
+                    icon=ft.Icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")
+                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)
+                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files facturas for json", on_click=lambda e: process_all_xml_files(directory_path.value)
+                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files facturas for json", on_click=lambda e: process_all_xml_files(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files retenciones for json", on_click=lambda e: process_all_xml_rets(directory_path.value)
+                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files retenciones for json", on_click=lambda e: process_all_xml_rets(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.REPLAY,  text="Process all xml files retenciones menor que", on_click=lambda e: replace_menorque(directory_path.value)
+                    icon=ft.Icons.REPLAY,  text="Process all xml files retenciones menor que", on_click=lambda e: replace_menorque(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.REPLAY,  text="Process all xml files retenciones mayor que", on_click=lambda e: replace_mayorque(directory_path.value)
+                    icon=ft.Icons.REPLAY,  text="Process all xml files retenciones mayor que", on_click=lambda e: replace_mayorque(directory_path.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.icons.REPLAY,  text="Process all xml files delete CDATA", on_click=lambda e: delete_CDATA(directory_path.value)
+                    icon=ft.Icons.REPLAY,  text="Process all xml files delete CDATA", on_click=lambda e: delete_CDATA(directory_path.value)
                     ),
             ]
         )
@@ -511,7 +511,7 @@ if __name__ == "__main__":
                 [
                     ElevatedButton(
                         "Open directory",
-                        icon=icons.FOLDER_OPEN,
+                        icon=Icons.FOLDER_OPEN,
                         on_click=lambda _: get_directory_dialog.get_directory_path(),
                         disabled=page.web,
                     ), 
