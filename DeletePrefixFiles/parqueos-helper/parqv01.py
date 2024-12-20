@@ -132,13 +132,13 @@ def main(page: ft.Page):
 
     hinit_tpicker = ft.ElevatedButton(
         "Pick init time",
-        icon=ft.icons.TIME_TO_LEAVE_SHARP,
+        icon=ft.Icons.TIME_TO_LEAVE_SHARP,
         on_click=lambda e: page.open(ingreso_input),
     )
 
     hfin_tpicker = ft.ElevatedButton(
         "Pick end time",
-        icon=ft.icons.TIMELAPSE,
+        icon=ft.Icons.TIMELAPSE,
         on_click=lambda e: page.open(salida_input),
     )
 
