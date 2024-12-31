@@ -11,11 +11,11 @@ async def main(page: ft.Page):
     async def move_vertical_divider(e: ft.DragUpdateEvent):
         if (e.delta_x > 0 and cleft.width < 360) or (e.delta_x < 0 and cleft.width > 200):
             cleft.width += e.delta_x
-        await cleft.update_async()
+        await cleft.update()
 
     async def show_draggable_cursor(e: ft.HoverEvent):
         e.control.mouse_cursor = ft.MouseCursor.RESIZE_LEFT_RIGHT
-        await e.control.update_async()
+        await e.control.update()
     # /////////////////////////////////////////////////////////////
     
     inputSearch = ft.TextField(

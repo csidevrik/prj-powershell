@@ -94,5 +94,5 @@ async def main(page: ft.Page):
     )
 
     await page.add_async(container)
-    await page.update_async()
+    await page.update()
 ft.app(target=main)
