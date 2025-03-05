@@ -2,18 +2,23 @@ import flet as ft
 
 name = "Draggable VerticalDivider"
 
-async def main(page: ft.Page):
+async def main(page: ft.Page) -> None:
+    """Main application entry point.
+    
+    Args:
+        page (ft.Page): The main page object
+    """
     page.window.width = 960
-    page.window.heigh = 540
+    page.window.height = 540  # Fixed typo
     page.title = "facturet"
     page.bgcolor = "#263238"
 
-    async def move_vertical_divider(e: ft.DragUpdateEvent):
+    async def move_vertical_divider(e: ft.DragUpdateEvent) -> None:
         if (e.delta_x > 0 and cleft.width < 360) or (e.delta_x < 0 and cleft.width > 200):
             cleft.width += e.delta_x
         await cleft.update()
 
-    async def show_draggable_cursor(e: ft.HoverEvent):
+    async def show_draggable_cursor(e: ft.HoverEvent) -> None:
         e.control.mouse_cursor = ft.MouseCursor.RESIZE_LEFT_RIGHT
         await e.control.update()
     # /////////////////////////////////////////////////////////////
@@ -64,6 +69,6 @@ async def main(page: ft.Page):
         
     )
     
-    await page.add_async(fila)
-    pass
+    page.add(fila)  # Cambiado de add_async a add
+
 ft.app(target=main)
