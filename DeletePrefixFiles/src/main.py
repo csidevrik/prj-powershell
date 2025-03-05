@@ -7,7 +7,6 @@ LIMIT_VD1_MIN=100
 LIMIT_VD2_MAX=200
 LIMIT_VD2_MIN=100
 
-
 async def main(page: ft.Page):
     page.window.heigh = 1080
     page.window.width = 1920

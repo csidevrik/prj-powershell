@@ -8,7 +8,7 @@ import subprocess
 import flet as ft
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Dict
 from pathlib import Path
 
 @dataclass
@@ -83,7 +83,7 @@ class FileManager:
     def remove_duplicates(folder_path: Path) -> None:
         """Removes duplicate files based on their content hash."""
         files = list(folder_path.glob('*'))
-        hash_map = {}
+        hash_map: Dict[str, List[Path]] = {}
         
         for file_path in files:
             file_hash = hashlib.sha256(file_path.read_bytes()).hexdigest()
@@ -144,25 +144,25 @@ class AppGUI:
         self._setup_controls(page)
         self._create_layout(page)
     
-    # def _configure_page(self, page: ft.Page):
-    #     """Configure page properties."""
-    #     page.title = "Document Processor"
-    #     page.padding = 0
-    #     page.bgcolor = ft.colors.with_opacity(0.90, '#07D2A9')
-    #     page.window.height = 500
-    #     page.window.width = 1000
-    #     page.window.max_width = 1200
-    #     page.window.max_height = 600
+    def _configure_page(self, page: ft.Page):
+        """Configure page properties."""
+        page.title = "Document Processor"
+        page.padding = 0
+        page.bgcolor = ft.Colors.with_opacity(0.90, '#07D2A9')
+        page.window.height = 500
+        page.window.width = 1000
+        page.window.max_width = 1200
+        page.window.max_height = 600
         
-    #     page.appbar = ft.AppBar(
-    #         leading=ft.Icon(ft.icons.DOOR_SLIDING),
-    #         leading_width=100,
-    #         title=ft.Text("Document Processor"),
-    #         center_title=True,
-    #         bgcolor=ft.colors.with_opacity(0.90, '#07D2A9')
-    #     )
+        page.appbar = ft.AppBar(
+            leading=ft.Icon(ft.Icons.DOOR_SLIDING),
+            leading_width=100,
+            title=ft.Text("Document Processor"),
+            center_title=True,
+            bgcolor=ft.Colors.with_opacity(0.90, '#07D2A9')
+        )
         
-    #     page.update()
+        page.update()
 
     def _setup_controls(self, page: ft.Page):
         """Set up all control elements."""
@@ -184,7 +184,7 @@ class AppGUI:
         actions_button = self._create_actions_menu()
         directory_button = ft.ElevatedButton(
             "Open directory",
-            icon=ft.icons.FOLDER_OPEN,
+            icon=ft.Icons.FOLDER_OPEN,
             on_click=lambda _: self.get_directory_dialog.get_directory_path(),
             disabled=page.web
         )
@@ -200,21 +200,21 @@ class AppGUI:
         """Create the actions popup menu."""
         return ft.PopupMenuButton(items=[
             ft.PopupMenuItem(
-                icon=ft.icons.BROWSER_UPDATED_SHARP,
+                icon=ft.Icons.BROWSER_UPDATED_SHARP,
                 text="Open in Firefox",
                 on_click=lambda _: self.doc_viewer.open_pdfs_in_browser(
                     Path(self.directory_path.value), "firefox"
                 )
             ),
             ft.PopupMenuItem(
-                icon=ft.icons.BROWSER_UPDATED_SHARP,
+                icon=ft.Icons.BROWSER_UPDATED_SHARP,
                 text="Open in Chrome",
                 on_click=lambda _: self.doc_viewer.open_pdfs_in_browser(
                     Path(self.directory_path.value), "chrome"
                 )
             ),
             ft.PopupMenuItem(
-                icon=ft.icons.CONTROL_POINT_DUPLICATE_SHARP,
+                icon=ft.Icons.CONTROL_POINT_DUPLICATE_SHARP,
                 text="Remove duplicates",
                 on_click=lambda _: self.file_manager.remove_duplicates(
                     Path(self.directory_path.value)
