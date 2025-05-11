@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///C:/Program Files (x86)/Nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.94 scan initiated Sat Apr 12 14:54:15 2025 as: &quot;C:\\Program Files (x86)\\Nmap\\nmap.exe&quot; -sn -oX resultado.xml 192.169.100.0/24 -->
+<nmaprun scanner="nmap" args="&quot;C:\\Program Files (x86)\\Nmap\\nmap.exe&quot; -sn -oX resultado.xml 192.169.100.0/24" start="1744487655" startstr="Sat Apr 12 14:54:15 2025" version="7.94" xmloutputversion="1.05">
+<verbose level="0"/>
+<debugging level="0"/>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.1" addrtype="ipv4"/>
+<address addr="30:DE:4B:87:55:FB" addrtype="mac" vendor="TP-Link Limited"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.11" addrtype="ipv4"/>
+<address addr="50:C7:BF:CE:B0:32" addrtype="mac" vendor="TP-Link Technologies"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.13" addrtype="ipv4"/>
+<address addr="D4:CA:6D:E0:08:9D" addrtype="mac" vendor="Routerboard.com"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.14" addrtype="ipv4"/>
+<address addr="6C:3B:6B:0E:53:43" addrtype="mac" vendor="Routerboard.com"/>
+<hostnames>
+</hostnames>
+<times srtt="0" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.31" addrtype="ipv4"/>
+<address addr="6C:4B:90:81:0A:1E" addrtype="mac" vendor="LiteON"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.38" addrtype="ipv4"/>
+<address addr="30:9C:23:7C:AD:AC" addrtype="mac" vendor="Micro-Star Intl"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.60" addrtype="ipv4"/>
+<address addr="5E:C6:A3:97:41:53" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.61" addrtype="ipv4"/>
+<address addr="A4:A9:30:79:3C:E6" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.104" addrtype="ipv4"/>
+<address addr="A4:A9:30:79:3C:E6" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.110" addrtype="ipv4"/>
+<address addr="44:07:0B:D7:85:1C" addrtype="mac" vendor="Google"/>
+<hostnames>
+</hostnames>
+<times srtt="20000" rttvar="20000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.174" addrtype="ipv4"/>
+<address addr="AE:E0:9E:52:B3:9F" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="186414" rttvar="263020" to="1238494"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.169.100.204" addrtype="ipv4"/>
+<address addr="F0:9F:C2:D6:17:EE" addrtype="mac" vendor="Ubiquiti Networks"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="localhost-response" reason_ttl="0"/>
+<address addr="192.169.100.41" addrtype="ipv4"/>
+<hostnames>
+<hostname name="host.docker.internal" type="PTR"/>
+</hostnames>
+</host>
+<runstats><finished time="1744487670" timestr="Sat Apr 12 14:54:30 2025" summary="Nmap done at Sat Apr 12 14:54:30 2025; 256 IP addresses (13 hosts up) scanned in 14.66 seconds" elapsed="14.66" exit="success"/><hosts up="13" down="243" total="256"/>
+</runstats>
+</nmaprun>
