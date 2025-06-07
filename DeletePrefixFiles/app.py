@@ -37,80 +37,55 @@ class RegistroRet:
         self.ret_value = ret_value
         self.fac_number = fac_number
 
-def extract_code_from_filename(folderPath):
-    # Utilizamos una expresión regular para buscar un patrón específico (cualquier secuencia de letras mayúsculas y números) en el nombre del archivo.
-    match = re.search(r"I[0-9]+", folderPath)
-    if match:
-        # Si se encuentra un patrón, lo extraemos y lo devolvemos.
-        return match.group()
-    else:
-        # Si no se encuentra un patrón, devolvemos None.
-        return None
-    
-def delete_CDATA(folder_path):
-    files = os.listdir(folder_path)
-    # Define la carpeta que deseas leer
-    for archivo in files:
-        # Verifica si el archivo es un archivo .xml
-        if archivo.endswith('.xml'):
-            # Abre el archivo en modo lectura y escritura
-            with open(os.path.join(folder_path, archivo), 'r+') as f:
-                # Lee el contenido del archivo
-                contenido = f.read()
-                # Reemplaza todas las repeticiones de &lt; por <
-                contenido = contenido.replace('<![CDATA[<?xml version="1.0" encoding="UTF-8"?><comprobanteRetencion id="comprobante" version="1.0.0">', '')
-                contenido = contenido.replace('</comprobanteRetencion>]]>','')
-                # Coloca el cursor al inicio del archivo
-                f.seek(0)
-                # Escribe el contenido modificado en el archivo
-                f.write(contenido)
-                # Trunca el archivo para eliminar cualquier contenido adicional
-                f.truncate()
 
-def replace_menorque(folder_path):
-    files = os.listdir(folder_path)
-    # Define la carpeta que deseas leer
-    for archivo in files:
-        # Verifica si el archivo es un archivo .xml
-        if archivo.endswith('.xml'):
-            # Abre el archivo en modo lectura y escritura
-            with open(os.path.join(folder_path, archivo), 'r+') as f:
-                # Lee el contenido del archivo
-                contenido = f.read()
-                # Reemplaza todas las repeticiones de &lt; por <
-                contenido = contenido.replace('&lt;', '<')
-                # Coloca el cursor al inicio del archivo
+def replace_string_onxml(filexml: str, ssearch: str, sreplace: str):
+    """
+    Reemplaza todas las ocurrencias de ssearch por sreplace en el archivo XML dado.
+    """
+    try:
+        with open(filexml, 'r+', encoding='utf-8') as f:
+            contenido = f.read()
+            nuevo_contenido = contenido.replace(ssearch, sreplace)
+            if nuevo_contenido != contenido:
                 f.seek(0)
-                # Escribe el contenido modificado en el archivo
-                f.write(contenido)
-                # Trunca el archivo para eliminar cualquier contenido adicional
+                f.write(nuevo_contenido)
                 f.truncate()
-    
-def replace_mayorque(folder_path):
-    files = os.listdir(folder_path)
-    # Define la carpeta que deseas leer
-    for archivo in files:
-        # Verifica si el archivo es un archivo .xml
-        if archivo.endswith('.xml'):
-            # Abre el archivo en modo lectura y escritura
-            with open(os.path.join(folder_path, archivo), 'r+') as f:
-                # Lee el contenido del archivo
-                contenido = f.read()
-                # Reemplaza todas las repeticiones de &lt; por <
-                contenido = contenido.replace('&gt;', '>')
-                # Coloca el cursor al inicio del archivo
-                f.seek(0)
-                # Escribe el contenido modificado en el archivo
-                f.write(contenido)
-                # Trunca el archivo para eliminar cualquier contenido adicional
-                f.truncate()
+    except Exception as e:
+        print(f"Error processing file {filexml}: {e}")
 
-def remove_duplicate_files(folder_path):
-    files = os.listdir(folder_path)
+def delete_CDATA(folder):
+    ssearch1 = '<![CDATA[<?xml version="1.0" encoding="UTF-8"?><comprobanteRetencion id="comprobante" version="1.0.0">'
+    ssearch2 = '</comprobanteRetencion>]]>'
+    for archivo in os.listdir(folder):
+        if archivo.lower().endswith('.xml'):
+            ruta = os.path.join(folder, archivo)
+            replace_string_onxml(ruta, ssearch1, '')
+            replace_string_onxml(ruta, ssearch2, '')
+
+def replace_menorque(folder):
+    for archivo in os.listdir(folder):
+        if archivo.lower().endswith('.xml'):
+            ruta = os.path.join(folder, archivo)
+            replace_string_onxml(ruta, '&lt;', '<')
+
+def replace_mayorque(folder):
+    for archivo in os.listdir(folder):
+        if archivo.lower().endswith('.xml'):
+            ruta = os.path.join(folder, archivo)
+            replace_string_onxml(ruta, '&gt;', '>')
+
+def clean_xml_files(folder):
+    replace_mayorque(folder)
+    replace_menorque(folder)
+    delete_CDATA(folder)
+
+
+def remove_duplicate_files(folder):
+    files = os.listdir(folder)
     # Agrupa los archivos por su valor de hash SHA-256
     grouped_files = {}
     for file_name in files:
-        file_path = os.path.join(folder_path, file_name)
+        file_path = os.path.join(folder, file_name)
         with open(file_path, 'rb') as f:
             file_hash = hashlib.sha256(f.read()).hexdigest()
 
@@ -126,9 +101,9 @@ def remove_duplicate_files(folder_path):
             if file_path != oldest_file:
                 os.remove(file_path)
 
-def remove_prefix_files_pdf(folder_path, prefix):
+def remove_prefix_files_pdf(folder, prefix):
     # Obtener la lista de archivos en la carpeta
-    files = os.listdir(folder_path)
+    files = os.listdir(folder)
     files_pdf = [file for file in files if file.lower().endswith(".pdf")]
 
     # Iterar a través de los archivos PDF y renombrarlos
@@ -145,21 +120,21 @@ def remove_prefix_files_pdf(folder_path, prefix):
             nuevo_nombre_pdf = nuevo_nombre + ".pdf"
 
             # Ruta completa del archivo original y nuevo
-            ruta_archivo_original = os.path.join(folder_path, file_pdf)
-            ruta_archivo_nuevo = os.path.join(folder_path, nuevo_nombre_pdf)
+            ruta_archivo_original = os.path.join(folder, file_pdf)
+            ruta_archivo_nuevo = os.path.join(folder, nuevo_nombre_pdf)
 
             # Renombrar el archivo PDF
             os.rename(ruta_archivo_original, ruta_archivo_nuevo)
 
-def update_json_with_xml_data(directory_path, json_path):
+def update_json_with_xml_data(folder, json_path):
     # Cargar el archivo JSON
     with open(json_path, 'r') as json_file:
         data = json.load(json_file)
 
     # Iterar sobre los archivos XML en el directorio
-    for filename in os.listdir(directory_path):
+    for filename in os.listdir(folder):
         if filename.lower().endswith('.xml'):
-            xml_file_path = os.path.join(directory_path, filename)
+            xml_file_path = os.path.join(folder, filename)
 
             # Obtener datos de la factura del archivo XML
             factura_xml = extract_xml_data(xml_file_path)
@@ -199,18 +174,18 @@ def json_to_csv(json_file_path, csv_file_path):
         for row in data:
             csv_writer.writerow(row.values())
 
-def process_all_xml_files(directory_path):
+def process_all_xml_files(folder):
     registros = []
 
     # Asegúrate de que el directorio exista
-    if not os.path.exists(directory_path):
-        print(f"El directorio {directory_path} no existe.")
+    if not os.path.exists(folder):
+        print(f"El directorio {folder} no existe.")
         return
 
     # Recorre todos los archivos en el directorio
-    for filename in os.listdir(directory_path):
+    for filename in os.listdir(folder):
         if filename.endswith(".xml"):
-            xml_file_path = os.path.join(directory_path, filename)
+            xml_file_path = os.path.join(folder, filename)
 
             # Extrae los datos del archivo XML
             registro = extract_xml_data(xml_file_path)
@@ -223,31 +198,32 @@ def process_all_xml_files(directory_path):
             })
 
     # Guarda la lista de registros en un archivo JSON
-    json_path = os.path.join(directory_path, 'registros.json')
+    json_path = os.path.join(folder, 'registros.json')
     with open(json_path, 'w') as json_file:
         json.dump(registros, json_file, indent=4)
 
-    print(f"Se han procesado los archivos XML en {directory_path}.")
+    print(f"Se han procesado los archivos XML en {folder}.")
     print(f"Se han guardado los registros en {json_path}.")
 
     # Convierte el archivo JSON a CSV
-    csv_path = os.path.join(directory_path, 'registros.csv')
+    csv_path = os.path.join(folder, 'registros.csv')
     json_to_csv(json_path, csv_path)
 
     print(f"Se ha convertido el archivo JSON a CSV en {csv_path}.")
     
-def process_all_xml_rets(directory_path):
+def process_all_xml_rets(folder):
+    clean_xml_files(folder)
     registros = []
 
     # Asegúrate de que el directorio exista
-    if not os.path.exists(directory_path):
-        print(f"El directorio {directory_path} no existe.")
+    if not os.path.exists(folder):
+        print(f"El directorio {folder} no existe.")
         return
 
     # Recorre todos los archivos en el directorio
-    for filename in os.listdir(directory_path):
+    for filename in os.listdir(folder):
         if filename.endswith(".xml"):
-            xml_file_path = os.path.join(directory_path, filename)
+            xml_file_path = os.path.join(folder, filename)
 
             # Extrae los datos del archivo XML
             registro = get_register_xml_retencion(xml_file_path)
@@ -260,15 +236,15 @@ def process_all_xml_rets(directory_path):
             })
 
     # Guarda la lista de registros en un archivo JSON
-    json_path = os.path.join(directory_path, 'retenciones.json')
+    json_path = os.path.join(folder, 'retenciones.json')
     with open(json_path, 'w') as json_file:
         json.dump(registros, json_file, indent=4)
 
-    print(f"Se han procesado los archivos XML en {directory_path}.")
+    print(f"Se han procesado los archivos XML en {folder}.")
     print(f"Se han guardado los registros en {json_path}.")
 
     # Convierte el archivo JSON a CSV
-    csv_path = os.path.join(directory_path, 'retenciones.csv')
+    csv_path = os.path.join(folder, 'retenciones.csv')
     json_to_csv(json_path, csv_path)
 
     print(f"Se ha convertido el archivo JSON a CSV en {csv_path}.")
@@ -332,29 +308,29 @@ def get_register_xml_retencion(xml_file_path):
     return RegistroRet(ret_number=retencion_numbe, ret_value=retencion_value, fac_number=factura_number)
 
 
-def rename_files_with_attributes(folder_path):
+def rename_files_with_attributes(folder):
     # Ruta de la carpeta "corregir"
-    ruta_corregir = os.path.join(folder_path, "corregir")
+    ruta_corregir = os.path.join(folder, "corregir")
     print(ruta_corregir)
 
     # Lista de archivos en la carpeta
-    files = os.listdir(folder_path)
+    files = os.listdir(folder)
 
     # Filtra los archivos .xml en la carpeta
     xml_files = [file for file in files if file.lower().endswith(".xml")]
 
     for xml_file in xml_files:
         # Obtener el nuevo nombre del archivo XML
-        new_name = extract_xml_content(os.path.join(folder_path, xml_file))
+        new_name = extract_xml_content(os.path.join(folder, xml_file))
 
         # Construir el nombre del archivo PDF con la misma base
         pdf_file_name = os.path.splitext(xml_file)[0] + ".pdf"
 
         # Renombrar el archivo XML
-        os.rename(os.path.join(folder_path, xml_file), os.path.join(folder_path, f"{new_name}.xml"))
+        os.rename(os.path.join(folder, xml_file), os.path.join(folder, f"{new_name}.xml"))
 
         # Renombrar el archivo PDF
-        os.rename(os.path.join(folder_path, pdf_file_name), os.path.join(folder_path, f"{new_name}.pdf"))
+        os.rename(os.path.join(folder, pdf_file_name), os.path.join(folder, f"{new_name}.pdf"))
 
 def extract_xml_content(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -386,24 +362,24 @@ def extract_xml_content(file_path):
     print(new_name)
     return new_name
 
-def open_pdf_with_browser(folder_path, browser_command):
-    files = os.listdir(folder_path)
+def open_pdf_with_browser(folder, browser_command):
+    files = os.listdir(folder)
     filesPDF = [file for file in files if file.endswith(".pdf")]
-    filesPDF.sort(key=lambda x: os.path.getmtime(os.path.join(folder_path,x)), reverse=True)
+    filesPDF.sort(key=lambda x: os.path.getmtime(os.path.join(folder,x)), reverse=True)
     contador = 0
     for filePDF in filesPDF:
         contador += 1
-        pathComplete = os.path.abspath(os.path.join(folder_path, filePDF))
+        pathComplete = os.path.abspath(os.path.join(folder, filePDF))
         # print(pathComplete)
         subprocess.run(f"{browser_command} --new-tab {pathComplete}", shell=True)
         
-def open_pdf_with_firefox(folder_path):
+def open_pdf_with_firefox(folder):
     browser_command = get_browser_command("firefox")
-    open_pdf_with_browser(folder_path, browser_command)
+    open_pdf_with_browser(folder, browser_command)
 
-def open_pdf_with_chrome(folder_path):
+def open_pdf_with_chrome(folder):
     browser_command = get_browser_command("chrome")
-    open_pdf_with_browser(folder_path, browser_command)
+    open_pdf_with_browser(folder, browser_command)
 
 def get_browser_command(browser):
     if platform.system() == "Linux":
@@ -449,34 +425,25 @@ if __name__ == "__main__":
         pb = ft.PopupMenuButton(
             items=[
                 ft.PopupMenuItem(
-                    icon=ft.Icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(directory_path.value)
+                    icon=ft.Icons.BROWSER_UPDATED_SHARP,  text="Check with firefox", on_click=lambda e: open_pdf_with_firefox(folder.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.Icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(directory_path.value)
+                    icon=ft.Icons.BROWSER_UPDATED_SHARP,  text="Check with chrome", on_click=lambda e: open_pdf_with_chrome(folder.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.Icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(directory_path.value)
+                    icon=ft.Icons.CONTROL_POINT_DUPLICATE_SHARP,  text="Remove duplicates", on_click=lambda e: remove_duplicate_files(folder.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(directory_path.value,"RIDE_")
+                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Remove prefix RIDE", on_click=lambda e: remove_prefix_files_pdf(folder.value,"RIDE_")
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(directory_path.value)
+                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Rename files using the xml", on_click=lambda e: rename_files_with_attributes(folder.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files facturas for json", on_click=lambda e: process_all_xml_files(directory_path.value)
+                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files facturas for json", on_click=lambda e: process_all_xml_files(folder.value)
                     ),
                 ft.PopupMenuItem(
-                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Process all xml files retenciones for json", on_click=lambda e: process_all_xml_rets(directory_path.value)
-                    ),
-                ft.PopupMenuItem(
-                    icon=ft.Icons.REPLAY,  text="Process all xml files retenciones menor que", on_click=lambda e: replace_menorque(directory_path.value)
-                    ),
-                ft.PopupMenuItem(
-                    icon=ft.Icons.REPLAY,  text="Process all xml files retenciones mayor que", on_click=lambda e: replace_mayorque(directory_path.value)
-                    ),
-                ft.PopupMenuItem(
-                    icon=ft.Icons.REPLAY,  text="Process all xml files delete CDATA", on_click=lambda e: delete_CDATA(directory_path.value)
+                    icon=ft.Icons.TEXT_FORMAT_ROUNDED,  text="Process all xml retenciones", on_click=lambda e: process_all_xml_rets(folder.value)
                     ),
             ]
         )
@@ -484,11 +451,11 @@ if __name__ == "__main__":
 
         # Open directory dialog
         def get_directory_result(e: FilePickerResultEvent):
-            directory_path.value = e.path if e.path else "Cancelled!"
-            directory_path.update()
+            folder.value = e.path if e.path else "Cancelled!"
+            folder.update()
 
         get_directory_dialog = FilePicker(on_result=get_directory_result)
-        directory_path = Text()
+        folder = Text()
 
         def pick_files_result(e: FilePickerResultEvent):
             selected_files.value = (
@@ -499,7 +466,7 @@ if __name__ == "__main__":
         pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
         selected_files = Text()
 
-        page.add(directory_path)
+        page.add(folder)
         page.add(selected_files)
 
         # hide all dialogs in overlay
@@ -515,7 +482,7 @@ if __name__ == "__main__":
                         on_click=lambda _: get_directory_dialog.get_directory_path(),
                         disabled=page.web,
                     ), 
-                    directory_path,
+                    folder,
                 ]
             ),
         )
