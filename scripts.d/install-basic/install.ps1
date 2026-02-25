@@ -7,6 +7,7 @@ $ErrorActionPreference = 'Stop'
 $Script:IsServer = $false
 $Script:OSVersion = ""
 $Script:OSName = ""
+$Script:OSType = ""  # "WindowsServer", "Windows11", "Windows10"
 
 # Colores y banner
 function Write-Banner {
@@ -40,8 +41,10 @@ function Get-SystemType {
         $Script:IsServer = $true
         return "Windows Server"
     } elseif ($os.Caption -like "*Windows 11*") {
+        $Script:OSType = "Windows11"
         return "Windows 11"
     } elseif ($os.Caption -like "*Windows 10*") {
+        $Script:OSType = "Windows10"
         return "Windows 10"
     } else {
         return "Windows (Unknown)"
@@ -168,59 +171,406 @@ function Setup-Firewall {
     }
 }
 
+# Verificar si un programa está instalado
+function Test-ProgramInstalled {
+    param(
+        [string]$ProgramId,
+        [string]$VerifyCommand = "",
+        [string]$ExecutableName = ""
+    )
+    
+    # Primero buscar el ejecutable en rutas estándar
+    if ($ExecutableName) {
+        $possiblePaths = @(
+            "C:\Program Files\$ExecutableName",
+            "C:\Program Files (x86)\$ExecutableName",
+            "$env:USERPROFILE\AppData\Local\Programs\$ExecutableName",
+            "C:\$ExecutableName"
+        )
+        
+        foreach ($path in $possiblePaths) {
+            if (Test-Path "$path\*.exe" -ErrorAction SilentlyContinue) {
+                return $true
+            }
+        }
+    }
+    
+    # Si hay comando de verificación, usarlo
+    if ($VerifyCommand) {
+        try {
+            $result = & cmd.exe /c $VerifyCommand 2>&1
+            if ($LASTEXITCODE -eq 0) { return $true }
+        } catch {
+            return $false
+        }
+    }
+    
+    # Alternativa: buscar en registro de Windows
+    try {
+        $installed = Get-ChildItem -Path @(
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall",
+            "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall",
+            "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+        ) -ErrorAction SilentlyContinue | 
+        Get-ItemProperty | 
+        Where-Object { $_.DisplayName -match $ProgramId }
+        
+        return $null -ne $installed
+    } catch {
+        return $false
+    }
+}
+
+# Actualizar PATH del usuario
+function Update-EnvironmentPath {
+    Write-Info "Refreshing Environment PATH..."
+    
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    
+    # Rutas comunes que winget puede usar
+    $commonPaths = @(
+        "C:\Program Files\Git\cmd",
+        "C:\Program Files\Git\bin",
+        "C:\Program Files\Go\bin",
+        "C:\Users\$env:USERNAME\AppData\Local\Microsoft\WindowsApps",
+        "$env:USERPROFILE\AppData\Local\Programs\Python\Python312",
+        "$env:USERPROFILE\AppData\Local\Programs\Python\Python312\Scripts"
+    )
+    
+    foreach ($path in $commonPaths) {
+        if ((Test-Path $path) -and ($env:Path -notlike "*$path*")) {
+            $env:Path += ";$path"
+        }
+    }
+    
+    Write-Success "PATH updated in current session"
+}
+
+# Permitir seleccionar paquetes manualmente
+function Show-PackageSelector {
+    param(
+        [array]$PackageList,
+        [string]$Category
+    )
+    
+    Write-Host ""
+    Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host "║ $Category" -ForegroundColor Cyan
+    Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host ""
+    
+    for ($i = 0; $i -lt $PackageList.Count; $i++) {
+        $critical = if ($PackageList[$i].Critical) { " [CRITICAL]" } else { "" }
+        Write-Host "  [$($i+1)] $($PackageList[$i].Name)$critical"
+    }
+    
+    Write-Host ""
+    Write-Host "  [A] Install All"
+    Write-Host "  [S] Skip All"
+}
+
+# Permitir preferencias interactivas
+function Get-InstallPreferences {
+    Write-Host ""
+    Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Yellow
+    Write-Host "║ Installation Preferences                                 ║" -ForegroundColor Yellow
+    Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "Quick Options:"
+    Write-Host "  [1] Full Installation (all packages)"
+    Write-Host "  [2] Essential Only (Git, Python, Go)"
+    Write-Host "  [3] Custom Selection"
+    Write-Host "  [4] Show installed packages and exit"
+    Write-Host ""
+    
+    $choice = Read-Host "Select option (1-4, default: 1)"
+    if ([string]::IsNullOrWhiteSpace($choice)) { $choice = "1" }
+    
+    return $choice
+}
+
 # Instalar paquetes según plataforma
 function Install-Packages {
-    Write-Info "Installing packages for your system..."
-    
-    # Paquetes comunes para ambas plataformas
-    $commonPackages = @(
-        @{Id="Git.Git"; Name="Git"},
-        @{Id="GoLang.Go"; Name="Go"},
-        @{Id="Python.Python.3.12"; Name="Python 3.12"}
+    param(
+        [array]$Packages = $null
     )
     
-    # Paquetes específicos de Windows Server
-    $serverPackages = @(
-        @{Id="Google.Chrome"; Name="Chrome"},
-        @{Id="Mozilla.Firefox"; Name="Firefox"},
-        @{Id="Microsoft.VisualStudioCode"; Name="VS Code"},
-        @{Id="Microsoft.PowerShell"; Name="PowerShell 7"}
-    )
+    # Si no se proporcionan paquetes, compilar lista según OS específico
+    if ($null -eq $Packages -or $Packages -eq "FULL") {
+        Write-Info "Building package list for: $Script:OSName"
+        
+        # ==================== PAQUETES COMUNES PARA TODAS LAS PLATAFORMAS ====================
+        $commonPackages = @(
+            @{
+                Id="Git.Git"
+                Name="Git"
+                VerifyCommand="git --version"
+                ExecutableName="git.exe"
+                Critical=$true
+            },
+            @{
+                Id="GoLang.Go"
+                Name="Go"
+                VerifyCommand="go version"
+                ExecutableName="go.exe"
+                Critical=$false
+            },
+            @{
+                Id="Python.Python.3.12"
+                Name="Python 3.12"
+                VerifyCommand="python --version"
+                ExecutableName="python.exe"
+                Critical=$false
+            }
+        )
+        
+        # ==================== PAQUETES ESPECÍFICOS DE WINDOWS SERVER ====================
+        # Los servidores necesitan herramientas de desarrollo y navegadores para actualizaciones
+        if ($Script:IsServer) {
+            Write-Info "Detected Windows Server - installing server tools"
+            
+            $specificPackages = @(
+                @{
+                    Id="Google.Chrome"
+                    Name="Chrome"
+                    VerifyCommand="chrome --version"
+                    ExecutableName="chrome.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Mozilla.Firefox"
+                    Name="Firefox"
+                    VerifyCommand="firefox --version"
+                    ExecutableName="firefox.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Microsoft.VisualStudioCode"
+                    Name="VS Code"
+                    VerifyCommand="code --version"
+                    ExecutableName="code.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Microsoft.PowerShell"
+                    Name="PowerShell 7"
+                    VerifyCommand="pwsh --version"
+                    ExecutableName="pwsh.exe"
+                    Critical=$false
+                }
+            )
+        }
+        # ==================== PAQUETES ESPECÍFICOS DE WINDOWS 11 ====================
+        elseif ($Script:OSType -eq "Windows11") {
+            Write-Info "Detected Windows 11 - installing desktop and modern tools"
+            
+            $specificPackages = @(
+                @{
+                    Id="Microsoft.WindowsTerminal"
+                    Name="Windows Terminal"
+                    VerifyCommand="wt.exe --version"
+                    ExecutableName="wt.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Microsoft.PowerToys"
+                    Name="PowerToys"
+                    VerifyCommand=""
+                    ExecutableName="PowerToys.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Microsoft.VisualStudioCode"
+                    Name="VS Code"
+                    VerifyCommand="code --version"
+                    ExecutableName="code.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Google.Chrome"
+                    Name="Chrome"
+                    VerifyCommand="chrome --version"
+                    ExecutableName="chrome.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Mozilla.Firefox"
+                    Name="Firefox"
+                    VerifyCommand="firefox --version"
+                    ExecutableName="firefox.exe"
+                    Critical=$false
+                }
+            )
+        }
+        # ==================== PAQUETES ESPECÍFICOS DE WINDOWS 10 ====================
+        elseif ($Script:OSType -eq "Windows10") {
+            Write-Info "Detected Windows 10 - installing compatible tools"
+            
+            $specificPackages = @(
+                @{
+                    Id="Microsoft.VisualStudioCode"
+                    Name="VS Code"
+                    VerifyCommand="code --version"
+                    ExecutableName="code.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Google.Chrome"
+                    Name="Chrome"
+                    VerifyCommand="chrome --version"
+                    ExecutableName="chrome.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Mozilla.Firefox"
+                    Name="Firefox"
+                    VerifyCommand="firefox --version"
+                    ExecutableName="firefox.exe"
+                    Critical=$false
+                },
+                @{
+                    Id="Microsoft.PowerShell"
+                    Name="PowerShell 7"
+                    VerifyCommand="pwsh --version"
+                    ExecutableName="pwsh.exe"
+                    Critical=$false
+                }
+            )
+        }
+        else {
+            Write-Warning "Unknown OS type, using common packages only"
+            $specificPackages = @()
+        }
+        
+        $Packages = $commonPackages + $specificPackages
+    }
     
-    # Paquetes específicos de Windows 10/11
-    $desktopPackages = @(
-        @{Id="Microsoft.WindowsTerminal"; Name="Windows Terminal"},
-        @{Id="Microsoft.PowerToys"; Name="PowerToys"},
-        @{Id="Microsoft.VisualStudioCode"; Name="VS Code"}
-    )
+    Write-Host ""
+    Write-Info "Package list prepared: $($Packages.Count) packages to process"
     
-    # Seleccionar paquetes según plataforma
-    $packagesToInstall = $commonPackages
-    
-    if ($Script:IsServer) {
-        Write-Info "Installing server-specific packages..."
-        $packagesToInstall += $serverPackages
-    } else {
-        Write-Info "Installing desktop-specific packages..."
-        $packagesToInstall += $desktopPackages
+    # Contadores
+    $results = @{
+        Success = @()
+        Failed = @()
+        Skipped = @()
+        VerificationFailed = @()
     }
     
     # Instalar cada paquete
-    foreach ($pkg in $packagesToInstall) {
-        Write-Info "Installing $($pkg.Name)..."
+    foreach ($pkg in $Packages) {
+        $maxRetries = 2
+        $attempt = 1
+        $installed = $false
         
-        try {
-            winget install --id $pkg.Id --silent --accept-source-agreements --accept-package-agreements 2>&1 | Out-Null
-            
-            if ($LASTEXITCODE -eq 0) {
-                Write-Success "$($pkg.Name) installed"
-            } else {
-                Write-Warning "$($pkg.Name) may already be installed or encountered an issue"
+        while ($attempt -le $maxRetries -and -not $installed) {
+            if ($attempt -gt 1) {
+                Write-Host "  Retry $attempt/$maxRetries..." -ForegroundColor Yellow
             }
-        } catch {
-            Write-Warning "Could not install $($pkg.Name): $_"
+            
+            Write-Host "→ Installing $($pkg.Name)..." -ForegroundColor Yellow -NoNewline
+            
+            try {
+                # Ejecutar winget install
+                $output = & winget install --id $pkg.Id --silent --accept-source-agreements --accept-package-agreements --force 2>&1
+                $exitCode = $LASTEXITCODE
+                
+                # Wait más largo para permitir que se complete la instalación
+                Write-Host " (waiting...)" -ForegroundColor Gray -NoNewline
+                Start-Sleep -Seconds 4
+                
+                # Limpiar PATH y verificar
+                Update-EnvironmentPath
+                
+                # Verificar si se instaló
+                $installed = Test-ProgramInstalled -ProgramId $pkg.Id -VerifyCommand $pkg.VerifyCommand -ExecutableName $pkg.ExecutableName
+                
+                if ($installed) {
+                    Write-Host " ✓" -ForegroundColor Green
+                    Write-Success "  → $($pkg.Name) confirmed installed"
+                    $results.Success += $pkg.Name
+                    break
+                } else {
+                    if ($attempt -lt $maxRetries) {
+                        Write-Host " ⚠" -ForegroundColor Yellow
+                        Write-Warning "  → Installation not confirmed, retrying..."
+                    }
+                }
+            } catch {
+                Write-Host " ✗" -ForegroundColor Red
+                Write-Error "  → Error: $_"
+            }
+            
+            $attempt++
+        }
+        
+        # Si no se instaló después de reintentos
+        if (-not $installed) {
+            Write-Host "✗" -ForegroundColor Red
+            Write-Error "  → Failed to install $($pkg.Name) after $maxRetries attempts"
+            
+            # Intentar verificar si simplemente el comando no funciona pero está instalado
+            try {
+                $regCheck = Get-ChildItem -Path @(
+                    "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall",
+                    "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall",
+                    "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+                ) -ErrorAction SilentlyContinue | 
+                Get-ItemProperty | 
+                Where-Object { $_.DisplayName -match $pkg.Id -or $_.DisplayName -match $pkg.Name }
+                
+                if ($regCheck) {
+                    Write-Warning "  → Found in registry but command verification failed. Needs PATH refresh or restart."
+                    $results.VerificationFailed += $pkg.Name
+                } else {
+                    if ($pkg.Critical) {
+                        $results.Failed += $pkg.Name
+                    } else {
+                        $results.Skipped += $pkg.Name
+                    }
+                }
+            } catch {
+                if ($pkg.Critical) {
+                    $results.Failed += $pkg.Name
+                } else {
+                    $results.Skipped += $pkg.Name
+                }
+            }
         }
     }
+    
+    # Mostrar resumen
+    Write-Host ""
+    Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host "║           Installation Summary ($($Script:OSName))     ║" -ForegroundColor Cyan
+    Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host ""
+    
+    if ($results.Success.Count -gt 0) {
+        Write-Success "Verified installed ($($results.Success.Count)):"
+        $results.Success | ForEach-Object { Write-Host "  ✓ $_" -ForegroundColor Green }
+    }
+    
+    if ($results.VerificationFailed.Count -gt 0) {
+        Write-Warning "Installed but command failed ($($results.VerificationFailed.Count)):"
+        $results.VerificationFailed | ForEach-Object { Write-Host "  ⚠ $_" -ForegroundColor DarkYellow }
+        Write-Info "  These may work after restarting PowerShell"
+    }
+    
+    if ($results.Failed.Count -gt 0) {
+        Write-Error "Failed to install (CRITICAL) ($($results.Failed.Count)):"
+        $results.Failed | ForEach-Object { Write-Host "  ✗ $_" -ForegroundColor Red }
+        Write-Warning "Some critical packages failed. Solutions:"
+        Write-Host "  1. Check: https://www.winget.run" -ForegroundColor Yellow
+        Write-Host "  2. Manual: https://git-scm.com/download/win" -ForegroundColor Yellow
+    }
+    
+    if ($results.Skipped.Count -gt 0) {
+        Write-Warning "Skipped ($($results.Skipped.Count)):"
+        $results.Skipped | ForEach-Object { Write-Host "  ⚠ $_" -ForegroundColor DarkYellow }
+    }
+    
+    Write-Host ""
+    return $results
 }
 
 # Configuraciones específicas de Windows Server
@@ -266,41 +616,235 @@ try {
     Write-Host ""
     
     Install-Winget
+    Write-Host ""
+    
     Setup-OpenSSH
+    Write-Host ""
+    
     Setup-Firewall
-    Install-Packages
+    Write-Host ""
     
-    # Configuraciones específicas por plataforma
-    if ($Script:IsServer) {
-        Configure-ServerSpecific
-    } else {
-        Configure-DesktopSpecific
+    # Obtener preferencias del usuario
+    $preference = Get-InstallPreferences
+    
+    Write-Host ""
+    
+    # Instalar paquetes según preferencia
+    switch ($preference) {
+        "4" {
+            # Mostrar paquetes ya instalados
+            Write-Info "Checking installed programs..."
+            Write-Host ""
+            
+            # Programas comunes a verificar
+            $checkPrograms = @(
+                @{Name="Git"; Command="git --version"},
+                @{Name="Python"; Command="python --version"},
+                @{Name="Go"; Command="go version"},
+                @{Name="Node.js"; Command="node --version"},
+                @{Name="VS Code"; Command="code --version"}
+            )
+            
+            foreach ($prog in $checkPrograms) {
+                if (Get-Command $prog.Command.Split()[0] -ErrorAction SilentlyContinue) {
+                    $version = & cmd.exe /c $prog.Command 2>&1
+                    Write-Success "$($prog.Name): $version"
+                } else {
+                    Write-Warning "$($prog.Name): Not installed"
+                }
+            }
+            Write-Host ""
+            exit 0
+        }
+        
+        "2" {
+            # Solo esenciales (Git, Python, Go)
+            Write-Info "Installing Essential packages only (Git, Python, Go)..."
+            
+            # Crear lista simple con solo esenciales
+            $packagesToInstall = @(
+                @{
+                    Id="Git.Git"
+                    Name="Git"
+                    VerifyCommand="git --version"
+                    ExecutableName="git.exe"
+                    Critical=$true
+                },
+                @{
+                    Id="Python.Python.3.12"
+                    Name="Python 3.12"
+                    VerifyCommand="python --version"
+                    ExecutableName="python.exe"
+                    Critical=$true
+                },
+                @{
+                    Id="GoLang.Go"
+                    Name="Go"
+                    VerifyCommand="go version"
+                    ExecutableName="go.exe"
+                    Critical=$true
+                }
+            )
+        }
+        
+        "3" {
+            # Custom selection
+            Write-Info "Custom package selection mode"
+            Write-Host ""
+            Write-Warning "Current system: $Script:OSName"
+            Write-Warning "Script will install platform-specific packages."
+            Write-Host ""
+            
+            # Let Install-Packages handle platform determination
+            $packagesToInstall = "FULL"
+        }
+        
+        default {
+            # Full installation (opción por defecto)
+            Write-Info "Full Installation mode selected"
+            Write-Host "Platform: $Script:OSName"
+            
+            # Let Install-Packages handle everything based on OS type
+            $packagesToInstall = "FULL"
+        }
     }
     
-    # Resumen final
-    Write-Host ""
-    Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Green
-    Write-Host "║              Installation Complete! 🎉                   ║" -ForegroundColor Green
-    Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Green
-    Write-Host ""
-    Write-Success "Platform: $osType"
-    Write-Success "SSH Server: Running on port 22"
-    Write-Success "Firewall: Configured"
-    Write-Success "Development tools: Installed"
-    Write-Host ""
-    
-    if ($Script:IsServer) {
-        Write-Info "Server-specific configurations applied"
-    } else {
-        Write-Info "Desktop-specific configurations applied"
+    # Instalar paquetes si no es el caso de salida
+    if ($preference -ne "4") {
+        $installResults = Install-Packages -Packages $packagesToInstall
+        
+        # Actualizar PATH final
+        Update-EnvironmentPath
+        
+        # Configuraciones específicas por plataforma
+        if ($Script:IsServer) {
+            Configure-ServerSpecific
+        } else {
+            Configure-DesktopSpecific
+        }
+        
+        # Resumen final mejorado
+        Write-Host ""
+        Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Green
+        Write-Host "║              Installation Complete! 🎉                   ║" -ForegroundColor Green
+        Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Green
+        Write-Host ""
+        Write-Success "Platform: $osType"
+        Write-Success "SSH Server: Running on port 22"
+        Write-Success "Firewall: Configured for SSH"
+        Write-Success "Total successfully verified: $($installResults.Success.Count)"
+        
+        if ($installResults.VerificationFailed.Count -gt 0) {
+            Write-Warning "Found in Registry but not verified: $($installResults.VerificationFailed.Count)"
+        }
+        
+        if ($installResults.Failed.Count -gt 0) {
+            Write-Error "Failed packages: $($installResults.Failed.Count)"
+        }
+        
+        Write-Host ""
+        Write-Success "Verification Results:"
+        Write-Host ""
+        
+        # Git
+        $gitCmd = "git --version" 
+        if (Get-Command git -ErrorAction SilentlyContinue) {
+            try {
+                $gitVersion = & cmd.exe /c $gitCmd 2>&1
+                Write-Host "  ✓ Git: $gitVersion" -ForegroundColor Green
+            } catch {
+                Write-Host "  ⚠ Git found in registry but cmd failed (needs restart)" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "  ✗ Git: NOT FOUND IN PATH" -ForegroundColor Red
+            Write-Warning "    Install manually from: https://git-scm.com/download/win"
+        }
+        
+        # Python
+        if (Get-Command python -ErrorAction SilentlyContinue) {
+            try {
+                $pythonVersion = & cmd.exe /c "python --version" 2>&1
+                Write-Host "  ✓ Python: $pythonVersion" -ForegroundColor Green
+            } catch {
+                Write-Host "  ⚠ Python found but cmd failed" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "  ? Python: Not in PATH (check if installed)" -ForegroundColor Yellow
+        }
+        
+        # Go
+        if (Get-Command go -ErrorAction SilentlyContinue) {
+            try {
+                $goVersion = & cmd.exe /c "go version" 2>&1
+                Write-Host "  ✓ Go: $goVersion" -ForegroundColor Green
+            } catch {
+                Write-Host "  ⚠ Go found but cmd failed" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "  ? Go: Not in PATH (check if installed)" -ForegroundColor Yellow
+        }
+        
+        Write-Host ""
+        
+        if ($Script:IsServer) {
+            Write-Info "Server-specific configurations applied"
+        } else {
+            Write-Info "Desktop-specific configurations applied"
+        }
+        
+        Write-Host ""
+        Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+        Write-Host "║           Next Steps                                     ║" -ForegroundColor Cyan
+        Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+        Write-Host ""
+        
+        Write-Host "1. Restart PowerShell/Terminal:" -ForegroundColor Cyan
+        Write-Host "   Close this terminal and open a NEW one for full PATH refresh" -ForegroundColor Gray
+        Write-Host ""
+        
+        Write-Host "2. Verify installation:" -ForegroundColor Cyan
+        Write-Host "   git --version" -ForegroundColor DarkCyan
+        Write-Host "   python --version" -ForegroundColor DarkCyan
+        Write-Host "   go version" -ForegroundColor DarkCyan
+        Write-Host ""
+        
+        Write-Host "3. SSH Connection:" -ForegroundColor Cyan
+        Write-Host "   ssh $env:USERNAME@$env:COMPUTERNAME" -ForegroundColor DarkCyan
+        Write-Host ""
+        
+        if ($installResults.Failed.Count -gt 0 -or $installResults.VerificationFailed.Count -gt 0) {
+            Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Yellow
+            Write-Host "║           Troubleshooting                                 ║" -ForegroundColor Yellow
+            Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Yellow
+            Write-Host ""
+            
+            if ($installResults.Failed.Count -gt 0) {
+                Write-Warning "Critical packages not installed:"
+                $installResults.Failed | ForEach-Object {
+                    Write-Host "  • $_" -ForegroundColor Red
+                }
+                Write-Host ""
+                Write-Host "  Options:" -ForegroundColor Yellow
+                Write-Host "    1. Run: winget install --id Git.Git --force" -ForegroundColor DarkYellow
+                Write-Host "    2. Manual download: https://www.winget.run" -ForegroundColor DarkYellow
+                Write-Host "    3. Direct links:" -ForegroundColor DarkYellow
+                Write-Host "       • Git: https://git-scm.com/download/win" -ForegroundColor DarkYellow
+                Write-Host "       • Python: https://www.python.org/downloads" -ForegroundColor DarkYellow
+                Write-Host "       • Go: https://golang.org/dl" -ForegroundColor DarkYellow
+            }
+            
+            if ($installResults.VerificationFailed.Count -gt 0) {
+                Write-Warning "Found in registry but command failed:"
+                $installResults.VerificationFailed | ForEach-Object {
+                    Write-Host "  • $_" -ForegroundColor Yellow
+                }
+                Write-Host ""
+                Write-Host "  → Restart PowerShell and try: git --version" -ForegroundColor Yellow
+            }
+            Write-Host ""
+        }
     }
-    
-    Write-Host ""
-    Write-Info "You can now connect via SSH:"
-    Write-Host "  ssh $env:USERNAME@$env:COMPUTERNAME" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Info "Restart your terminal to use newly installed tools"
-    
+        
 } catch {
     Write-Host ""
     Write-Error "Installation failed: $_"
