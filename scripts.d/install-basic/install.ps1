@@ -470,8 +470,8 @@ function Install-Packages {
             Write-Host "→ Installing $($pkg.Name)..." -ForegroundColor Yellow -NoNewline
             
             try {
-                # Ejecutar winget install
-                $output = & winget install --id $pkg.Id --silent --accept-source-agreements --accept-package-agreements --force 2>&1
+                # Ejecutar winget install con --source winget especificado
+                $output = & winget install --id $pkg.Id --source winget --silent --accept-source-agreements --accept-package-agreements --force 2>&1
                 $exitCode = $LASTEXITCODE
                 
                 # Wait más largo para permitir que se complete la instalación
