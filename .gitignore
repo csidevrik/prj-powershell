@@ -1,6 +1,46 @@
+# Ignore the DeletePrefixFiles subproject folder entirely (not tracked)
+/DeletePrefixFiles/
+
+# Ignore build and config artifacts for the DeletePrefixFiles subproject
 /DeletePrefixFiles/config.json
 /DeletePrefixFiles/config.properties
 /DeletePrefixFiles/build
 /DeletePrefixFiles/dist
 /DeletePrefixFiles/env
 /DeletePrefixFiles/venv
+/DeletePrefixFiles/.python-version
+/DeletePrefixFiles/__pycache__/
+/DeletePrefixFiles/*.py[cod]
+/DeletePrefixFiles/*.log
+
+# General Python ignores
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+*.log
+
+# Virtualenv / environment folders
+venv/
+.venv/
+ENV/
+env/
+
+# IDE & editor
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS files
+.DS_Store
+Thumbs.db
