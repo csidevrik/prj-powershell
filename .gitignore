@@ -1,17 +1,7 @@
-# Ignore the DeletePrefixFiles subproject folder entirely (not tracked)
+# --- Subproyecto externo (no pertenece a este repo) ---
+# DeletePrefixFiles es una app Python/Flet independiente.
+# Los archivos físicos pueden existir localmente pero git no los rastrea.
 /DeletePrefixFiles/
-
-# Ignore build and config artifacts for the DeletePrefixFiles subproject
-/DeletePrefixFiles/config.json
-/DeletePrefixFiles/config.properties
-/DeletePrefixFiles/build
-/DeletePrefixFiles/dist
-/DeletePrefixFiles/env
-/DeletePrefixFiles/venv
-/DeletePrefixFiles/.python-version
-/DeletePrefixFiles/__pycache__/
-/DeletePrefixFiles/*.py[cod]
-/DeletePrefixFiles/*.log
 
 # General Python ignores
 __pycache__/
@@ -44,3 +34,17 @@ env/
 # OS files
 .DS_Store
 Thumbs.db
+
+# --- Outputs de scripts (datos generados, no código fuente) ---
+# Resultados de webscraping (archivos CSV, debug, raw generados por los scripts)
+python/webscraping/*.csv
+python/webscraping/*.debug.*
+python/webscraping/*.raw.txt
+
+# Resultados de escaneos de red
+pwsh/Networkutils/reporte_red.csv
+pwsh/Networkutils/resultado.xml
+
+# --- Node.js (sin package.json activo) ---
+package-lock.json
+node_modules/
