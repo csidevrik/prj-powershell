@@ -1,7 +1,10 @@
-# --- Subproyecto externo (no pertenece a este repo) ---
-# DeletePrefixFiles es una app Python/Flet independiente.
-# Los archivos físicos pueden existir localmente pero git no los rastrea.
-/DeletePrefixFiles/
+# --- DeletePrefixFiles: solo excluir artefactos generados ---
+# El código fuente SÍ se versiona. Lo que se ignora son entornos y builds.
+/DeletePrefixFiles/.venv/
+/DeletePrefixFiles/build/
+/DeletePrefixFiles/dist/
+/DeletePrefixFiles/__pycache__/
+/DeletePrefixFiles/DeletePrefixFiles/
 
 # General Python ignores
 __pycache__/
