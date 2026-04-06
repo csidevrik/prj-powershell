@@ -101,14 +101,18 @@ def clean_xml_files(folder):
     replace_in_all_xml_files(folder, '</comprobanteRetencion>]]>')
 
 
+def get_file_hash(file_path):
+    """Calcula y retorna el hash SHA-256 de un archivo."""
+    with open(file_path, 'rb') as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
 def remove_duplicate_files(folder):
     """Elimina archivos duplicados en folder usando hash SHA-256, conservando el mas antiguo."""
     files = os.listdir(folder)
     grouped_files = {}
     for file_name in files:
         file_path = os.path.join(folder, file_name)
-        with open(file_path, 'rb') as f:
-            file_hash = hashlib.sha256(f.read()).hexdigest()
+        file_hash = get_file_hash(file_path)
         if file_hash not in grouped_files:
             grouped_files[file_hash] = []
         grouped_files[file_hash].append(file_path)
@@ -145,21 +149,23 @@ def save_to_json(data, json_path):
     with open(json_path, 'w') as json_file:
         json.dump(data, json_file, indent=4)
 
-def json_to_csv(json_file_path, csv_file_path):
-    """Convierte un archivo JSON (lista de objetos planos) a CSV."""
-    with open(json_file_path, 'r') as json_file:
-        data = json.load(json_file)
-
-    if not data or not isinstance(data, list) or not data[0]:
-        print("El archivo JSON no contiene datos validos.")
+def save_to_csv(data, csv_path):
+    """Guarda data (lista de dicts) directamente como CSV."""
+    if not data:
+        print("No hay datos para guardar.")
         return
-
     header = list(data[0].keys())
-    with open(csv_file_path, 'w', newline='') as csv_file:
+    with open(csv_path, 'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
         csv_writer.writerow(header)
         for row in data:
             csv_writer.writerow(row.values())
+
+def json_to_csv(json_file_path, csv_file_path):
+    """Lee un archivo JSON y lo convierte a CSV usando save_to_csv."""
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+    save_to_csv(data, csv_file_path)
 
 def process_all_xml_facs(folder):
     """Procesa todos los XMLs de facturas en folder y genera facturas.json y facturas.csv ordenados por code_inst."""
@@ -217,6 +223,10 @@ def extract_xml_fragment(file_path, start_limit, end_limit):
     extracted_xml = xml_content[start_index:end_index + len(end_limit)]
     return ET.fromstring(f"<factura>\n{extracted_xml}\n</factura>")
 
+def build_numero_factura(estab, pto_em, secue):
+    """Construye el numero de factura en formato FAC+estab+ptoEmi+secuencial."""
+    return f"FAC{estab}{pto_em}{secue}"
+
 def extract_fac_register(xml_file_path):
     """Extrae los datos de una factura desde un XML y retorna un objeto Factura."""
     root = extract_xml_fragment(xml_file_path, '<infoTributaria>', '</infoAdicional>')
@@ -226,7 +236,7 @@ def extract_fac_register(xml_file_path):
     secue  = root.find(".//secuencial").text
     codigo = root.find('.//campoAdicional[@nombre="Instalacion"]').text
 
-    numero_factura = f"FAC{estab}{pto_em}{secue}"
+    numero_factura = build_numero_factura(estab, pto_em, secue)
     valor_servicio = root.find(".//totalSinImpuestos").text
 
     print(codigo, numero_factura, valor_servicio)
@@ -249,13 +259,16 @@ def get_register_xml_retencion(xml_file_path):
     print(ret_num, ret_val, fac_num)
     return Retencion(ret_number=ret_num, ret_value=ret_val, fac_number=fac_num)
 
+def rename_file_pair(folder, old_name, new_name):
+    """Renombra un par XML+PDF en folder con el nuevo nombre dado."""
+    os.rename(os.path.join(folder, old_name),                              os.path.join(folder, f"{new_name}.xml"))
+    os.rename(os.path.join(folder, os.path.splitext(old_name)[0] + ".pdf"), os.path.join(folder, f"{new_name}.pdf"))
+
 def rename_files_with_attributes(folder):
     """Renombra pares XML+PDF en folder usando los atributos del XML como nuevo nombre."""
     for xml_file in get_files_extension(folder, '.xml'):
         new_name = build_filename_from_xml(os.path.join(folder, xml_file))
-        pdf_file = os.path.splitext(xml_file)[0] + ".pdf"
-        os.rename(os.path.join(folder, xml_file), os.path.join(folder, f"{new_name}.xml"))
-        os.rename(os.path.join(folder, pdf_file),  os.path.join(folder, f"{new_name}.pdf"))
+        rename_file_pair(folder, xml_file, new_name)
 
 def build_filename_from_xml(file_path):
     """Construye el nuevo nombre de archivo a partir de los datos del XML (estab+ptoEmi+secuencial-codigo)."""
@@ -266,7 +279,7 @@ def build_filename_from_xml(file_path):
     secue  = root.find(".//secuencial").text
     codigo = root.find('.//campoAdicional[@nombre="Instalacion"]').text
 
-    new_name = f"{estab}{pto_em}{secue}-{codigo}"
+    new_name = f"{build_numero_factura(estab, pto_em, secue)}-{codigo}"
     print(new_name)
     return new_name
 
