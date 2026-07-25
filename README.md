@@ -43,6 +43,24 @@ prj-powershell/
 
 ---
 
+## Instalación rápida
+
+### Setup básico de Windows (Git, Python, Go y más vía winget)
+
+De momento he creado un script que permite la instalación de herramientas básicas de desarrollo
+en Windows Server, Windows 11 y Windows 10 (detecta el sistema automáticamente).
+
+Para utilizarlo, abre **PowerShell como Administrador** y pega lo siguiente:
+
+```powershell
+irm https://raw.githubusercontent.com/csidevrik/prj-powershell/main/pwsh/install-basic/install.ps1 | iex
+```
+
+El script te preguntará qué deseas instalar (instalación completa, solo esenciales,
+selección personalizada, o solo ver lo que ya está instalado).
+
+---
+
 ## Uso rápido
 
 ### Abrir un puerto en el Firewall
