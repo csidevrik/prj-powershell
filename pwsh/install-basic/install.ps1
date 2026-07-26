@@ -177,6 +177,195 @@ function Get-InstallPreferences {
     return $choice
 }
 
+# Catálogo de paquetes disponibles para la plataforma detectada
+function Get-AvailablePackages {
+    param(
+        [string]$Mode = "FULL"  # FULL o ESSENTIAL
+    )
+
+    # ==================== PAQUETES SIEMPRE COMUNES ====================
+    $commonPackages = @(
+        @{
+            Id="Git.Git"
+            Name="Git"
+            VerifyCommand="git --version"
+            Critical=$true
+        },
+        @{
+            Id="Python.Python.3.12"
+            Name="Python 3.12"
+            VerifyCommand="python --version"
+            Critical=$true
+        },
+        @{
+            Id="GoLang.Go"
+            Name="Go"
+            VerifyCommand="go version"
+            Critical=$false
+        }
+    )
+
+    if ($Mode -eq "ESSENTIAL") {
+        return $commonPackages
+    }
+
+    # ==================== PAQUETES ESPECÍFICOS POR SO ====================
+    if ($Script:OSType -eq "WindowsServer" -or $Script:IsServer) {
+        $specificPackages = @(
+            @{
+                Id="Google.Chrome"
+                Name="Chrome"
+                VerifyCommand="chrome --version"
+                Critical=$false
+            },
+            @{
+                Id="Mozilla.Firefox"
+                Name="Firefox"
+                VerifyCommand="firefox --version"
+                Critical=$false
+            },
+            @{
+                Id="Insomnia.Insomnia"
+                Name="Insomnia"
+                VerifyCommand=""
+                Critical=$false
+            },
+            @{
+                Id="Microsoft.VisualStudioCode"
+                Name="VS Code"
+                VerifyCommand="code --version"
+                Critical=$false
+            },
+            @{
+                Id="Nmap.Nmap"
+                Name="Nmap"
+                VerifyCommand="nmap --version"
+                Critical=$false
+            },
+            @{
+                Id="Microsoft.PowerShell"
+                Name="PowerShell 7"
+                VerifyCommand="pwsh --version"
+                Critical=$false
+            }
+        )
+    }
+    elseif ($Script:OSType -eq "Windows11") {
+        $specificPackages = @(
+            @{
+                Id="Microsoft.WindowsTerminal"
+                Name="Windows Terminal"
+                VerifyCommand="wt.exe --version"
+                Critical=$false
+            },
+            @{
+                Id="Microsoft.PowerToys"
+                Name="PowerToys"
+                VerifyCommand=""
+                Critical=$false
+            },
+            @{
+                Id="Microsoft.VisualStudioCode"
+                Name="VS Code"
+                VerifyCommand="code --version"
+                Critical=$false
+            },
+            @{
+                Id="Google.Chrome"
+                Name="Chrome"
+                VerifyCommand="chrome --version"
+                Critical=$false
+            },
+            @{
+                Id="Mozilla.Firefox"
+                Name="Firefox"
+                VerifyCommand="firefox --version"
+                Critical=$false
+            },
+            @{
+                Id="Nmap.Nmap"
+                Name="Nmap"
+                VerifyCommand="nmap --version"
+                Critical=$false
+            }
+        )
+    }
+    elseif ($Script:OSType -eq "Windows10") {
+        $specificPackages = @(
+            @{
+                Id="Microsoft.VisualStudioCode"
+                Name="VS Code"
+                VerifyCommand="code --version"
+                Critical=$false
+            },
+            @{
+                Id="Google.Chrome"
+                Name="Chrome"
+                VerifyCommand="chrome --version"
+                Critical=$false
+            },
+            @{
+                Id="Mozilla.Firefox.ESR"
+                Name="Firefox"
+                VerifyCommand="firefox --version"
+                Critical=$false
+            },
+            @{
+                Id="Nmap.Nmap"
+                Name="Nmap"
+                VerifyCommand="nmap --version"
+                Critical=$false
+            },
+            @{
+                Id="Microsoft.PowerShell"
+                Name="PowerShell 7"
+                VerifyCommand="pwsh --version"
+                Critical=$false
+            }
+        )
+    }
+    else {
+        Write-Warning "Unknown OS type, using common packages only"
+        $specificPackages = @()
+    }
+
+    return $commonPackages + $specificPackages
+}
+
+# Menú de selección manual de paquetes
+function Get-CustomSelection {
+    $available = Get-AvailablePackages -Mode "FULL"
+
+    Write-Host ""
+    Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host "║ Custom Selection                                          ║" -ForegroundColor Cyan
+    Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host ""
+
+    for ($i = 0; $i -lt $available.Count; $i++) {
+        $critical = if ($available[$i].Critical) { " [recommended]" } else { "" }
+        Write-Host ("  [{0}] {1}{2}" -f ($i + 1), $available[$i].Name, $critical)
+    }
+
+    Write-Host ""
+    Write-Host "Escribe los números separados por coma (ej: 1,2,4), o 'A' para todos." -ForegroundColor Gray
+    $choice = Read-Host "Selección"
+
+    if ($choice -match '^[Aa]$') {
+        return $available
+    }
+
+    $indexes = $choice -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^\d+$' } | ForEach-Object { [int]$_ - 1 }
+    $selected = @($indexes | Where-Object { $_ -ge 0 -and $_ -lt $available.Count } | ForEach-Object { $available[$_] })
+
+    if ($selected.Count -eq 0) {
+        Write-Warning "No se seleccionó ningún paquete válido, usando lista completa."
+        return $available
+    }
+
+    return $selected
+}
+
 # Instalación de paquetes
 function Install-Packages {
     param(
@@ -187,174 +376,13 @@ function Install-Packages {
     # Si no se proporcionan paquetes, compilar lista según el modo
     if ($null -eq $Packages) {
         Write-Info "Building package list for: $Script:OSName (Mode: $Mode)"
-
-        # ==================== PAQUETES SIEMPRE COMUNES ====================
-        $commonPackages = @(
-            @{
-                Id="Git.Git"
-                Name="Git"
-                VerifyCommand="git --version"
-                Critical=$true
-            },
-            @{
-                Id="Python.Python.3.12"
-                Name="Python 3.12"
-                VerifyCommand="python --version"
-                Critical=$true
-            },
-            @{
-                Id="GoLang.Go"
-                Name="Go"
-                VerifyCommand="go version"
-                Critical=$false
-            }
-        )
-
-        # Si es ESSENTIAL, solo devuelve los comunes
-        if ($Mode -eq "ESSENTIAL") {
-            $Packages = $commonPackages
-            Write-Host ""
-            Write-Info "Package installation (ESSENTIAL mode): $($Packages.Count) packages"
-            Write-Host ""
-        } else {
-            # MODO FULL: agrega paquetes específicos por SO
-            Write-Host ""
-            Write-Host "Building FULL package list..." -ForegroundColor Cyan
-            Write-Debug "DEBUG: OSType=$($Script:OSType), IsServer=$($Script:IsServer)"
-
-            # ==================== PAQUETES ESPECÍFICOS POR SO ====================
-            if ($Script:OSType -eq "WindowsServer" -or $Script:IsServer) {
-                Write-Info "Detected Windows Server - installing server tools"
-
-                $specificPackages = @(
-                    @{
-                        Id="Google.Chrome"
-                        Name="Chrome"
-                        VerifyCommand="chrome --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Mozilla.Firefox"
-                        Name="Firefox"
-                        VerifyCommand="firefox --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Insomnia.Insomnia"
-                        Name="Insomnia"
-                        VerifyCommand=""
-                        Critical=$false
-                    },
-                    @{
-                        Id="Microsoft.VisualStudioCode"
-                        Name="VS Code"
-                        VerifyCommand="code --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Nmap.Nmap"
-                        Name="Nmap"
-                        VerifyCommand="nmap --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Microsoft.PowerShell"
-                        Name="PowerShell 7"
-                        VerifyCommand="pwsh --version"
-                        Critical=$false
-                    }
-                )
-            }
-            elseif ($Script:OSType -eq "Windows11") {
-                Write-Info "Detected Windows 11 - installing desktop tools"
-
-                $specificPackages = @(
-                    @{
-                        Id="Microsoft.WindowsTerminal"
-                        Name="Windows Terminal"
-                        VerifyCommand="wt.exe --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Microsoft.PowerToys"
-                        Name="PowerToys"
-                        VerifyCommand=""
-                        Critical=$false
-                    },
-                    @{
-                        Id="Microsoft.VisualStudioCode"
-                        Name="VS Code"
-                        VerifyCommand="code --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Google.Chrome"
-                        Name="Chrome"
-                        VerifyCommand="chrome --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Mozilla.Firefox"
-                        Name="Firefox"
-                        VerifyCommand="firefox --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Nmap.Nmap"
-                        Name="Nmap"
-                        VerifyCommand="nmap --version"
-                        Critical=$false
-                    }
-                )
-            }
-            elseif ($Script:OSType -eq "Windows10") {
-                Write-Info "Detected Windows 10 - installing compatible tools"
-
-                $specificPackages = @(
-                    @{
-                        Id="Microsoft.VisualStudioCode"
-                        Name="VS Code"
-                        VerifyCommand="code --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Google.Chrome"
-                        Name="Chrome"
-                        VerifyCommand="chrome --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Mozilla.Firefox.ESR"
-                        Name="Firefox"
-                        VerifyCommand="firefox --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Nmap.Nmap"
-                        Name="Nmap"
-                        VerifyCommand="nmap --version"
-                        Critical=$false
-                    },
-                    @{
-                        Id="Microsoft.PowerShell"
-                        Name="PowerShell 7"
-                        VerifyCommand="pwsh --version"
-                        Critical=$false
-                    }
-                )
-            }
-            else {
-                Write-Warning "Unknown OS type, using common packages only"
-                $specificPackages = @()
-            }
-
-            $Packages = $commonPackages + $specificPackages
-            Write-Info "Package installation (FULL mode): $($Packages.Count) packages"
-            Write-Host ""
-        }
+        Write-Host ""
+        $Packages = Get-AvailablePackages -Mode $Mode
+        Write-Info "Package installation ($Mode mode): $($Packages.Count) packages"
+        Write-Host ""
     }
 
-    if ($null -eq $Packages) {
+    if ($null -eq $Packages -or $Packages.Count -eq 0) {
         Write-Error "No packages to install"
         return
     }
@@ -373,7 +401,11 @@ function Install-Packages {
         $installed = $false
 
         while ($attempt -le $maxRetries -and -not $installed) {
-            Write-Host "→ Installing $($pkg.Name)..." -ForegroundColor Yellow
+            if ($attempt -gt 1) {
+                Write-Host "→ Retrying $($pkg.Name) ($attempt/$maxRetries)..." -ForegroundColor Yellow
+            } else {
+                Write-Host "→ Installing $($pkg.Name)..." -ForegroundColor Yellow
+            }
 
             try {
                 & winget install --id $pkg.Id --source winget --accept-source-agreements --accept-package-agreements
@@ -382,29 +414,23 @@ function Install-Packages {
                 Update-EnvironmentPath
 
                 $installed = Test-ProgramInstalled -ProgramId $pkg.Id -VerifyCommand $pkg.VerifyCommand
-
-                if ($installed) {
-                    Write-Host "  ✓ $($pkg.Name)" -ForegroundColor Green
-                    $results.Success += $pkg.Name
-                } else {
-                    if ($pkg.Critical) {
-                        Write-Host "  ✗ $($pkg.Name)" -ForegroundColor Red
-                        $results.Failed += $pkg.Name
-                    } else {
-                        Write-Host "  ⚠ $($pkg.Name)" -ForegroundColor Yellow
-                        $results.Skipped += $pkg.Name
-                    }
-                }
-                break
             } catch {
-                if ($pkg.Critical) {
-                    Write-Host "  ✗ $($pkg.Name)" -ForegroundColor Red
-                    $results.Failed += $pkg.Name
-                } else {
-                    Write-Host "  ⚠ $($pkg.Name)" -ForegroundColor Yellow
-                    $results.Skipped += $pkg.Name
-                }
-                break
+                $installed = $false
+            }
+
+            $attempt++
+        }
+
+        if ($installed) {
+            Write-Host "  ✓ $($pkg.Name)" -ForegroundColor Green
+            $results.Success += $pkg.Name
+        } else {
+            if ($pkg.Critical) {
+                Write-Host "  ✗ $($pkg.Name)" -ForegroundColor Red
+                $results.Failed += $pkg.Name
+            } else {
+                Write-Host "  ⚠ $($pkg.Name)" -ForegroundColor Yellow
+                $results.Skipped += $pkg.Name
             }
         }
     }
@@ -584,9 +610,11 @@ try {
         }
 
         "3" {
-            Write-Info "Full Installation mode (All packages)"
-            Write-Host "Installing all available packages for your platform..." -ForegroundColor Cyan
-            $installResults = Install-Packages -Mode "FULL"
+            Write-Info "Custom Selection mode"
+            $customPackages = Get-CustomSelection
+            Write-Host ""
+            Write-Info "Installing $($customPackages.Count) selected package(s)..."
+            $installResults = Install-Packages -Packages $customPackages
         }
 
         default {
