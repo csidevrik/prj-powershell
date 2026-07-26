@@ -131,35 +131,22 @@ function Setup-OpenSSHClient {
 function Test-ProgramInstalled {
     param(
         [string]$ProgramId,
-        [string]$VerifyCommand = "",
-        [string]$ExecutableName = ""
+        [string]$VerifyCommand = ""
     )
 
-    if ($ExecutableName) {
-        if (Get-Command $ExecutableName -ErrorAction SilentlyContinue) {
-            return $true
-        }
-    }
-
+    # Camino rápido: comando en PATH (funciona para Git, Python, Go, etc.)
     if ($VerifyCommand) {
         try {
-            $result = & cmd.exe /c $VerifyCommand 2>&1
+            & cmd.exe /c $VerifyCommand 2>&1 | Out-Null
             if ($LASTEXITCODE -eq 0) { return $true }
-        } catch {
-            return $false
-        }
+        } catch {}
     }
 
+    # Respaldo: preguntarle a winget directamente. Necesario para apps que no
+    # se agregan al PATH (Chrome, Firefox, Insomnia, PowerToys, Windows Terminal, ...)
     try {
-        $installed = Get-ChildItem -Path @(
-            "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall",
-            "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall",
-            "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
-        ) -ErrorAction SilentlyContinue |
-        Get-ItemProperty |
-        Where-Object { $_.DisplayName -match $ProgramId }
-
-        return $null -ne $installed
+        $output = & winget list --id $ProgramId --source winget --accept-source-agreements 2>&1
+        return [bool]($output | Select-String -SimpleMatch $ProgramId)
     } catch {
         return $false
     }
