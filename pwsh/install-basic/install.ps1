@@ -60,8 +60,8 @@ function Get-SystemType {
 function Test-Prerequisites {
     Write-Info "Checking prerequisites..."
 
-    $osType = Get-SystemType
-    Write-Success "Detected: $osType ($Script:OSVersion)"
+    $osLabel = Get-SystemType
+    Write-Success "Detected: $osLabel ($Script:OSVersion)"
 
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     if (!$isAdmin) {
@@ -70,7 +70,7 @@ function Test-Prerequisites {
     }
 
     Write-Success "Running with Administrator privileges"
-    return $osType
+    return $osLabel
 }
 
 # Instalar winget si no está disponible
@@ -533,10 +533,10 @@ function Configure-SystemSpecific {
 }
 
 # MAIN
-$osType = ""
+$osLabel = ""
 try {
-    $osType = Test-Prerequisites
-    Write-Banner $osType
+    $osLabel = Test-Prerequisites
+    Write-Banner $osLabel
     Write-Host ""
 
     Install-Winget
@@ -608,7 +608,7 @@ try {
         Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Green
         Write-Host ""
 
-        Write-Success "Platform: $osType"
+        Write-Success "Platform: $osLabel"
         Write-Success "Packages installed: $($installResults.Success.Count)"
         Write-Success "OpenSSH Client: Ready (can connect to remote servers)"
 
