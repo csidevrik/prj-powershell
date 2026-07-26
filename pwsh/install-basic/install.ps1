@@ -39,14 +39,19 @@ function Get-SystemType {
 
     if ($os.Caption -like "*Server*") {
         $Script:IsServer = $true
+        $Script:OSType = "WindowsServer"
         return "Windows Server"
     } elseif ($os.Caption -like "*Windows 11*") {
         $Script:OSType = "Windows11"
+        $Script:IsServer = $false
         return "Windows 11"
     } elseif ($os.Caption -like "*Windows 10*") {
         $Script:OSType = "Windows10"
+        $Script:IsServer = $false
         return "Windows 10"
     } else {
+        $Script:OSType = "Unknown"
+        $Script:IsServer = $false
         return "Windows (Unknown)"
     }
 }
@@ -228,9 +233,10 @@ function Install-Packages {
             # MODO FULL: agrega paquetes específicos por SO
             Write-Host ""
             Write-Host "Building FULL package list..." -ForegroundColor Cyan
+            Write-Debug "DEBUG: OSType=$($Script:OSType), IsServer=$($Script:IsServer)"
 
             # ==================== PAQUETES ESPECÍFICOS POR SO ====================
-            if ($Script:IsServer) {
+            if ($Script:OSType -eq "WindowsServer" -or $Script:IsServer) {
                 Write-Info "Detected Windows Server - installing server tools"
 
                 $specificPackages = @(
