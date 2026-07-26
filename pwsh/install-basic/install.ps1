@@ -337,7 +337,7 @@ function Install-Packages {
                         Critical=$false
                     },
                     @{
-                        Id="Mozilla.Firefox"
+                        Id="Mozilla.Firefox.ESR"
                         Name="Firefox"
                         VerifyCommand="firefox --version"
                         Critical=$false
