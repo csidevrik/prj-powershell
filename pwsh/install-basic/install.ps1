@@ -363,7 +363,7 @@ function Install-Packages {
         Success = @()
         Failed = @()
         Skipped = @()
-        VerificationFailed = @()
+        Packages = $Packages
     }
 
     # Instalar paquetes
@@ -617,12 +617,21 @@ try {
         }
 
         Write-Host ""
-        Write-Info "Verify installations:"
-        Write-Host "  git --version" -ForegroundColor DarkCyan
-        Write-Host "  python --version" -ForegroundColor DarkCyan
-        Write-Host "  go version" -ForegroundColor DarkCyan
-        Write-Host "  nmap --version" -ForegroundColor DarkCyan
-        Write-Host ""
+        $verifiableSuccess = $installResults.Packages | Where-Object {
+            $_.VerifyCommand -and $installResults.Success -contains $_.Name
+        }
+        if ($verifiableSuccess) {
+            Write-Info "Verify installations:"
+            $verifiableSuccess | ForEach-Object {
+                Write-Host "  $($_.VerifyCommand)" -ForegroundColor DarkCyan
+            }
+            Write-Host ""
+        }
+
+        if ($installResults.Skipped.Count -gt 0) {
+            Write-Warning "Skipped (not critical, may need manual install): $($installResults.Skipped -join ', ')"
+            Write-Host ""
+        }
 
         # Tarea opcional: OpenSSH Server
         Setup-OpenSSHServer-Optional
