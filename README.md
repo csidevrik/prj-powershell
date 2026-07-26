@@ -53,7 +53,7 @@ en Windows Server, Windows 11 y Windows 10 (detecta el sistema automáticamente)
 Para utilizarlo, abre **PowerShell como Administrador** y pega lo siguiente:
 
 ```powershell
-irm https://raw.githubusercontent.com/csidevrik/prj-powershell/main/pwsh/install-basic/install.ps1 | iex
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/csidevrik/prj-powershell/main/pwsh/install-basic/install.ps1 | iex"
 ```
 
 El script te preguntará qué deseas instalar (instalación completa, solo esenciales,
