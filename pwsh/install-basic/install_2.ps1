@@ -1,4 +1,4 @@
-﻿# install.ps1 - Universal Windows Setup (MEJORADO)
+# install.ps1 - Universal Windows Setup (MEJORADO)
 #Requires -RunAsAdministrator
 
 $ErrorActionPreference = 'Stop'
