@@ -373,10 +373,10 @@ function Install-Packages {
         $installed = $false
 
         while ($attempt -le $maxRetries -and -not $installed) {
-            Write-Host "→ $($pkg.Name)... " -ForegroundColor Yellow -NoNewline
+            Write-Host "→ Installing $($pkg.Name)..." -ForegroundColor Yellow
 
             try {
-                $output = & winget install --id $pkg.Id --source winget --silent --accept-source-agreements --accept-package-agreements 2>&1
+                & winget install --id $pkg.Id --source winget --accept-source-agreements --accept-package-agreements
                 Start-Sleep -Seconds 2
 
                 Update-EnvironmentPath
@@ -384,24 +384,24 @@ function Install-Packages {
                 $installed = Test-ProgramInstalled -ProgramId $pkg.Id -VerifyCommand $pkg.VerifyCommand
 
                 if ($installed) {
-                    Write-Host "✓" -ForegroundColor Green
+                    Write-Host "  ✓ $($pkg.Name)" -ForegroundColor Green
                     $results.Success += $pkg.Name
                 } else {
                     if ($pkg.Critical) {
-                        Write-Host "✗" -ForegroundColor Red
+                        Write-Host "  ✗ $($pkg.Name)" -ForegroundColor Red
                         $results.Failed += $pkg.Name
                     } else {
-                        Write-Host "⚠" -ForegroundColor Yellow
+                        Write-Host "  ⚠ $($pkg.Name)" -ForegroundColor Yellow
                         $results.Skipped += $pkg.Name
                     }
                 }
                 break
             } catch {
                 if ($pkg.Critical) {
-                    Write-Host "✗" -ForegroundColor Red
+                    Write-Host "  ✗ $($pkg.Name)" -ForegroundColor Red
                     $results.Failed += $pkg.Name
                 } else {
-                    Write-Host "⚠" -ForegroundColor Yellow
+                    Write-Host "  ⚠ $($pkg.Name)" -ForegroundColor Yellow
                     $results.Skipped += $pkg.Name
                 }
                 break
