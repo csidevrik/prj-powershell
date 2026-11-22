@@ -122,15 +122,23 @@ function Setup-OpenSSHClient {
     Write-Info "Installing OpenSSH Client..."
 
     try {
-        $sshClient = Get-WindowsCapability -Online -Name "OpenSSH.Client*" -ErrorAction SilentlyContinue
+        $sshClient = Get-WindowsCapability -Online -Name "OpenSSH.Client~~~~0.0.1.0" -ErrorAction SilentlyContinue
 
         if ($sshClient.State -eq 'Installed') {
             Write-Success "OpenSSH Client already installed"
+            $Script:SshClientReady = $true
             return
         }
 
-        Add-WindowsCapability -Online -Name "OpenSSH.Client~~~~0.0.1.0" -NoRestart | Out-Null
-        Write-Success "OpenSSH Client installed successfully"
+        Add-WindowsCapability -Online -Name "OpenSSH.Client~~~~0.0.1.0" | Out-Null
+
+        $sshClient = Get-WindowsCapability -Online -Name "OpenSSH.Client~~~~0.0.1.0" -ErrorAction SilentlyContinue
+        if ($sshClient.State -eq 'Installed') {
+            Write-Success "OpenSSH Client installed successfully"
+            $Script:SshClientReady = $true
+        } else {
+            throw "state is '$($sshClient.State)' after installation"
+        }
 
     } catch {
         Write-Warning "OpenSSH Client installation encountered issues: $_"
@@ -507,7 +515,12 @@ function Setup-OpenSSHServer-Optional {
         Write-Host "⏳ Installation in progress..." -ForegroundColor Cyan
 
         try {
-            Add-WindowsCapability -Online -Name "OpenSSH.Server~~~~0.0.1.0" -NoRestart | Out-Null
+            Add-WindowsCapability -Online -Name "OpenSSH.Server~~~~0.0.1.0" | Out-Null
+
+            $sshServerCap = Get-WindowsCapability -Online -Name "OpenSSH.Server~~~~0.0.1.0" -ErrorAction SilentlyContinue
+            if ($sshServerCap.State -ne 'Installed') {
+                throw "OpenSSH Server state is '$($sshServerCap.State)' after installation"
+            }
 
             Start-Sleep -Seconds 2
 
@@ -548,7 +561,7 @@ function Setup-OpenSSHServer-Optional {
     } else {
         Write-Info "OpenSSH Server installation skipped"
         Write-Info "You can install it later by running:"
-        Write-Host "  Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -NoRestart" -ForegroundColor DarkCyan
+        Write-Host "  Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0" -ForegroundColor DarkCyan
     }
 }
 
@@ -664,7 +677,11 @@ try {
 
         Write-Success "Platform: $osLabel"
         Write-Success "Packages installed: $($installResults.Success.Count)"
-        Write-Success "OpenSSH Client: Ready (can connect to remote servers)"
+        if ($Script:SshClientReady) {
+            Write-Success "OpenSSH Client: Ready (can connect to remote servers)"
+        } else {
+            Write-Warning "OpenSSH Client: NOT available. Install it with: Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0"
+        }
 
         if ($installResults.Failed.Count -gt 0) {
             Write-Error "Failed packages: $($installResults.Failed -join ', ')"
