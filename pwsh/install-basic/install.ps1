@@ -81,29 +81,39 @@ function Install-Winget {
     }
 
     Write-Info "Installing winget..."
+    $progressPreference = 'silentlyContinue'
 
+    # Dependencias: pueden fallar si ya están instaladas (no es fatal)
+    $dependencies = @(
+        @{ Url = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"; Path = "$env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" },
+        @{ Url = "https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx"; Path = "$env:TEMP\Microsoft.UI.Xaml.2.8.x64.appx" }
+    )
+
+    Write-Info "Downloading dependencies..."
+    foreach ($dep in $dependencies) {
+        try {
+            Invoke-WebRequest -Uri $dep.Url -OutFile $dep.Path
+            Add-AppxPackage -Path $dep.Path
+        } catch {
+            Write-Warning "Dependency not installed (may already be present): $(Split-Path $dep.Path -Leaf)"
+        }
+    }
+
+    # Winget sí es importante: si falla, se avisa
     try {
-        $progressPreference = 'silentlyContinue'
-
-        Write-Info "Downloading dependencies..."
-        $vcLibsUrl = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
-        $vcLibsPath = "$env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx"
-        Invoke-WebRequest -Uri $vcLibsUrl -OutFile $vcLibsPath -ErrorAction SilentlyContinue
-        Add-AppxPackage -Path $vcLibsPath -ErrorAction SilentlyContinue
-
-        $uiXamlUrl = "https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx"
-        $uiXamlPath = "$env:TEMP\Microsoft.UI.Xaml.2.8.x64.appx"
-        Invoke-WebRequest -Uri $uiXamlUrl -OutFile $uiXamlPath -ErrorAction SilentlyContinue
-        Add-AppxPackage -Path $uiXamlPath -ErrorAction SilentlyContinue
-
         $wingetUrl = "https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
         $wingetPath = "$env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-        Invoke-WebRequest -Uri $wingetUrl -OutFile $wingetPath -ErrorAction SilentlyContinue
-        Add-AppxPackage -Path $wingetPath -ErrorAction SilentlyContinue
-
-        Write-Success "Winget installed successfully"
+        Invoke-WebRequest -Uri $wingetUrl -OutFile $wingetPath
+        Add-AppxPackage -Path $wingetPath
     } catch {
-        Write-Warning "Could not install winget automatically."
+        Write-Warning "Could not install winget automatically: $_"
+    }
+
+    Update-EnvironmentPath
+    if (Get-Command winget -ErrorAction SilentlyContinue) {
+        Write-Success "Winget installed successfully"
+    } else {
+        Write-Warning "Winget is still not available. Install 'App Installer' from Microsoft Store and run the script again."
     }
 }
 
@@ -171,8 +181,14 @@ function Get-InstallPreferences {
     Write-Host "  [4] Show installed packages and exit"
     Write-Host ""
 
-    $choice = Read-Host "Select option (1-4, default: 1)"
-    if ([string]::IsNullOrWhiteSpace($choice)) { $choice = "1" }
+    do {
+        $choice = Read-Host "Select option (1-4, default: 1)"
+        if ([string]::IsNullOrWhiteSpace($choice)) { $choice = "1" }
+        $choice = $choice.Trim()
+        if ($choice -notin @("1", "2", "3", "4")) {
+            Write-Warning "Invalid option '$choice'. Please enter 1, 2, 3 or 4."
+        }
+    } while ($choice -notin @("1", "2", "3", "4"))
 
     return $choice
 }
@@ -408,7 +424,7 @@ function Install-Packages {
             }
 
             try {
-                & winget install --id $pkg.Id --source winget --accept-source-agreements --accept-package-agreements
+                & winget install --id $pkg.Id --source winget --accept-source-agreements --accept-package-agreements | Out-Host
                 Start-Sleep -Seconds 2
 
                 Update-EnvironmentPath
@@ -541,19 +557,34 @@ function Configure-SystemSpecific {
     if ($Script:IsServer) {
         Write-Info "Applying Windows Server configurations..."
         try {
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}" -Name "IsInstalled" -Value 0 -ErrorAction SilentlyContinue
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}" -Name "IsInstalled" -Value 0 -ErrorAction SilentlyContinue
+            $ieKeys = @(
+                "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}",
+                "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}"
+            )
+            foreach ($key in $ieKeys) {
+                Set-ItemProperty -Path $key -Name "IsInstalled" -Value 0
+                if ((Get-ItemProperty -Path $key -Name "IsInstalled").IsInstalled -ne 0) {
+                    throw "IsInstalled was not updated in $key"
+                }
+            }
             Write-Success "IE Enhanced Security disabled"
         } catch {
-            Write-Warning "Could not disable IE Enhanced Security"
+            Write-Warning "Could not disable IE Enhanced Security: $_"
         }
     } else {
         Write-Info "Applying Windows Desktop configurations..."
         try {
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -Value 1 -ErrorAction SilentlyContinue
+            $devPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
+            if (!(Test-Path $devPath)) {
+                New-Item -Path $devPath -Force | Out-Null
+            }
+            Set-ItemProperty -Path $devPath -Name "AllowDevelopmentWithoutDevLicense" -Value 1 -Type DWord
+            if ((Get-ItemProperty -Path $devPath -Name "AllowDevelopmentWithoutDevLicense").AllowDevelopmentWithoutDevLicense -ne 1) {
+                throw "value was not set"
+            }
             Write-Success "Developer Mode enabled"
         } catch {
-            Write-Warning "Could not enable Developer Mode"
+            Write-Warning "Could not enable Developer Mode: $_"
         }
     }
 }
@@ -581,22 +612,11 @@ try {
             Write-Info "Checking installed programs..."
             Write-Host ""
 
-            $checkPrograms = @(
-                @{Name="Git"; Command="git --version"},
-                @{Name="Python"; Command="python --version"},
-                @{Name="Go"; Command="go version"},
-                @{Name="Chrome"; Command="chrome --version"},
-                @{Name="Firefox"; Command="firefox --version"},
-                @{Name="Nmap"; Command="nmap --version"},
-                @{Name="VS Code"; Command="code --version"}
-            )
-
-            foreach ($prog in $checkPrograms) {
-                if (Get-Command $prog.Command.Split()[0] -ErrorAction SilentlyContinue) {
-                    $version = & cmd.exe /c $prog.Command 2>&1
-                    Write-Success "$($prog.Name): $version"
+            foreach ($pkg in Get-AvailablePackages -Mode "FULL") {
+                if (Test-ProgramInstalled -ProgramId $pkg.Id -VerifyCommand $pkg.VerifyCommand) {
+                    Write-Success "$($pkg.Name): installed"
                 } else {
-                    Write-Warning "$($prog.Name): Not installed"
+                    Write-Warning "$($pkg.Name): Not installed"
                 }
             }
             Write-Host ""
@@ -630,9 +650,15 @@ try {
         Update-EnvironmentPath
         Configure-SystemSpecific
 
+        $hasCriticalFailure = [bool]($installResults -and $installResults.Failed.Count -gt 0)
+
         Write-Host ""
         Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Green
-        Write-Host "║         Core Installation Complete! ✓                    ║" -ForegroundColor Green
+        if ($hasCriticalFailure) {
+            Write-Host "║         Installation finished with ERRORS                ║" -ForegroundColor Red
+        } else {
+            Write-Host "║         Core Installation Complete! ✓                    ║" -ForegroundColor Green
+        }
         Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Green
         Write-Host ""
 
@@ -663,6 +689,11 @@ try {
 
         # Tarea opcional: OpenSSH Server
         Setup-OpenSSHServer-Optional
+
+        if ($hasCriticalFailure) {
+            Write-Error "Setup finished with critical package failures. Review the list above and run the script again."
+            exit 1
+        }
 
         Write-Host ""
         Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
